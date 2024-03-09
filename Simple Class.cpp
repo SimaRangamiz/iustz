@@ -1,116 +1,53 @@
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
-
-class Item { 
-public: 
-    Item(string name) : name(name) {} 
- 
-    void use() { 
-        cout << "Using " << name << endl; 
-    } 
- 
-    string getName() { 
-        return name; 
-    } 
- 
-private: 
-    string name; 
-}; 
- 
- 
-class Weapon : public Item { 
-public: 
-    Weapon(string name, int power) : Item(name), power(power) {} 
- 
-    void attack() { 
-        cout << "Attacking with " << getName() << " (Power: " << power << ")" << endl; 
-    } 
- 
-    int getPower()  { 
-        return power; 
-    } 
- 
-private: 
-    int power; 
-}; 
- 
- 
-class HealthPotion : public Item { 
-public: 
-    HealthPotion(string name, int healthPoints) : Item(name), healthPoints(healthPoints) {} 
- 
-    void heal() { 
-        cout << "Healing with " << getName() << " (Health Points: " << healthPoints << ")" << std::endl; 
-    } 
- 
-    int getHealthPoints()  { 
-        return healthPoints; 
-    } 
- 
-private: 
-    int healthPoints; 
-}; 
- 
-class EnergyDrink : public Item { 
-public: 
-    EnergyDrink(string name, int energyPoints) : Item(name), energyPoints(energyPoints) {} 
- 
-    void boostEnergy() { 
-        cout << "Boosting energy with " << getName() << " (Energy Points: " << energyPoints << ")" << endl; 
-    } 
- 
-    int getEnergyPoints() const { 
-        return energyPoints; 
-    } 
- 
-private: 
-    int energyPoints; 
-}; 
-
 
 class Character
 {
-private:
+protected:
     int healthy;
     int energy;
-    int level;
+    // change
+    int power;
 
 public:
-    Character(int healthy, int energy, int level)
+    Character(int healthy, int energy, int power)
     {
         this->healthy = healthy;
         this->energy = energy;
-        this->level = level;
+        this->power = power;
     }
+    // chech
+    Character() = default;
 
-    void sethealthy(int healthy)
+    void setHealthy(int healthy)
     {
         this->healthy = healthy;
     }
 
-    int gethealthy()
+    int getHealthy()
     {
         return healthy;
     }
-    void setenergy(int energy)
+    void setEnergy(int energy)
     {
         this->energy = energy;
     }
 
-    int getenergy()
+    int getEnergy()
     {
         return energy;
     }
 
-    void setlevel(int lenel)
+    void setPower(int power)
     {
-        this->level = level;
+        this->power = power;
     }
 
-    int getlevel()
+    int getPower()
     {
-        return level;
+        return power;
     }
 
     virtual void attack()
@@ -123,30 +60,26 @@ public:
     }
 };
 
-
 class Player
 {
 private:
     string name;
     int age;
     char gender;
-    int healthy;
-    int energy;
+    // int healthy;
+    // int energy;
     int level;
-    int warmskill;
-    int coldskill;
+
+    int money;
 
 public:
-    Player(string name, int age, char gender, int healthy, int energy, int level, int warmskill, int coldskill)
+    Player(string name, int age, char gender, int level, int warmskill)
     {
         this->name = name;
         this->age = age;
         this->gender = gender;
-        this->healthy = healthy;
-        this->energy = energy;
         this->level = level;
-        this->warmskill = warmskill;
-        this->coldskill = coldskill;
+        this->money = money;
     }
 
     void setname(string name)
@@ -179,26 +112,7 @@ public:
         return gender;
     }
 
-    void sethealthy(int healthy)
-    {
-        this->healthy = healthy;
-    }
-
-    int gethealthy()
-    {
-        return healthy;
-    }
-    void setenergy(int energy)
-    {
-        this->energy = energy;
-    }
-
-    int getenergy()
-    {
-        return energy;
-    }
-
-    void setlevel(int lenel)
+    void setlevel(int level)
     {
         this->level = level;
     }
@@ -208,31 +122,21 @@ public:
         return level;
     }
 
-    void setwarmskill(int warmskill)
+    void setMoney(int coldskill)
     {
-        this->warmskill = warmskill;
+        this->money = money;
     }
 
-    int getwarmskill()
+    int getMoney()
     {
-        return warmskill;
-    }
-
-    void setcoldskill(int coldskill)
-    {
-        this->coldskill = coldskill;
-    }
-
-    int getcoldskill()
-    {
-        return coldskill;
+        // check
+        return money;
     }
 
     virtual void attack()
     {
     }
 };
-
 
 class Zambie : public Character
 {
@@ -242,8 +146,7 @@ public:
     }
 };
 
-
-class Strongerzambie : public Character
+class StrongerZambie : public Character
 {
 public:
     void attack() override
@@ -251,11 +154,185 @@ public:
     }
 };
 
-
-class Humanenemy : public Character
+class Human : public Character
 {
+    int warmskill;
+    int coldskill;
+
 public:
     void attack() override
     {
     }
 };
+
+//////////////////////////////////////////////////////////Item
+
+class Item
+{
+protected:
+    string name;
+    int power;
+    int count;
+
+public:
+    // Item(string name) : name(name) {}
+
+    // void use()
+    // {
+    //     cout << "Using " << name << endl;
+    // }
+
+    string getName()
+    {
+        return name;
+    }
+    void setPower(int power)
+    {
+        this->power = power;
+    }
+    int getPower()
+    {
+        return power;
+    }
+    void setCount(int count)
+    {
+        this->count = count;
+    }
+    int getPower()
+    {
+        return power;
+    }
+};
+
+class Weapon : public Item
+{
+public:
+    // check
+    //  Weapon(string name, int power) : name(name), power(power) {}
+    Weapon() = default;
+    void attack()
+    {
+        // cout << "Attacking with " << getName() << " (Power: " << power << ")" << endl;
+    }
+
+    int getPower()
+    {
+        // check
+        return this->power;
+    }
+
+    // private:
+    //     int power;
+};
+
+class HealthPotion : public Item
+{
+public:
+    // HealthPotion(string name, int healthPoints) : Item(name), healthPoints(healthPoints) {}
+    HealthPotion() = default;
+    void heal()
+    {
+        // cout << "Healing with " << getName() << " (Health Points: " << healthPoints << ")" << std::endl;
+    }
+
+    int getHealthPoints()
+    {
+        return healthPoints;
+    }
+
+private:
+    int healthPoints;
+};
+
+class EnergyDrink : public Item
+{
+public:
+    // EnergyDrink(string name, int energyPoints) : Item(name), energyPoints(energyPoints) {}
+    EnergyDrink() = default;
+    void boostEnergy()
+    {
+        // cout << "Boosting energy with " << getName() << " (Energy Points: " << energyPoints << ")" << endl;
+    }
+
+    int getEnergyPoints() const
+    {
+        return energyPoints;
+    }
+
+    int setEnergyPoints(int energy)
+    {
+        this->energyPoints = energy;
+    }
+
+private:
+    int energyPoints;
+};
+
+void round(Human human, Player player, Character enemy, vector<Weapon> weapon, vector<EnergyDrink> energyDrink, vector<HealthPotion> healthPotion)
+{
+    int enemyHealthy = enemy.getHealthy();
+    int Health = human.getHealthy();
+    int Energy = human.getEnergy();
+    int playerPower = human.getPower();
+    cout << "status :" << endl
+         << "Health :" << Health << endl
+         << "Energy :" << Energy << endl
+         << "enemy Health" << enemyHealthy << endl
+         << "1. Attack" << endl
+         << "2. Using items" << endl;
+        //  cout << "3. Level up" << endl;
+    int command;
+    cin >> command;
+    switch (command)
+    {
+    case 1:
+        enemy.setHealthy(enemyHealthy - playerPower);
+        break;
+    case 2:
+        cout << "1. Weapons (" << weapon.size() << ") \n 2. Energy Drink (" << energyDrink.size() << ") \n 3. Health Potion (" << healthPotion.size() << ") \n";
+        int i;
+        cin >> i;
+        if (i == 1)
+        {
+            for (int i = 0; i < weapon.size(); i++)
+            {
+                cout << i + 1 << ". " << weapon[i].getName() << endl;
+            }
+            cin >> i;
+            int weaponPow = weapon[i - 1].getPower();
+            enemy.setHealthy(enemyHealthy - weaponPow);
+        }
+
+        else if (i == 2)
+        {
+            for (int i = 0; i < energyDrink.size(); i++)
+            {
+                cout << i + 1 << ". " << energyDrink[i].getName() << endl;
+            }
+            cin >> i;
+            int drinkPow = energyDrink[i - 1].getPower();
+            enemy.setHealthy(Energy + drinkPow);
+        }
+
+        else if (i == 3)
+        {
+            for (int i = 0; i < healthPotion.size(); i++)
+            {
+                cout << i + 1 << ". " << healthPotion[i].getName() << endl;
+            }
+            cin >> i;
+            int drinkPow = healthPotion[i - 1].getPower();
+            enemy.setHealthy(Health + drinkPow);
+        }
+        break;
+
+    default:
+        cerr << "Incorrect command";
+        break;
+    }
+}
+
+int main()
+{
+    
+}
