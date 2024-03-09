@@ -2,6 +2,73 @@
 #include <string>
 using namespace std;
 
+class Item { 
+public: 
+    Item(string name) : name(name) {} 
+ 
+    void use() { 
+        cout << "Using " << name << endl; 
+    } 
+ 
+    string getName() { 
+        return name; 
+    } 
+ 
+private: 
+    string name; 
+}; 
+ 
+ 
+class Weapon : public Item { 
+public: 
+    Weapon(string name, int power) : Item(name), power(power) {} 
+ 
+    void attack() { 
+        cout << "Attacking with " << getName() << " (Power: " << power << ")" << endl; 
+    } 
+ 
+    int getPower()  { 
+        return power; 
+    } 
+ 
+private: 
+    int power; 
+}; 
+ 
+ 
+class HealthPotion : public Item { 
+public: 
+    HealthPotion(string name, int healthPoints) : Item(name), healthPoints(healthPoints) {} 
+ 
+    void heal() { 
+        cout << "Healing with " << getName() << " (Health Points: " << healthPoints << ")" << std::endl; 
+    } 
+ 
+    int getHealthPoints()  { 
+        return healthPoints; 
+    } 
+ 
+private: 
+    int healthPoints; 
+}; 
+ 
+class EnergyDrink : public Item { 
+public: 
+    EnergyDrink(string name, int energyPoints) : Item(name), energyPoints(energyPoints) {} 
+ 
+    void boostEnergy() { 
+        cout << "Boosting energy with " << getName() << " (Energy Points: " << energyPoints << ")" << endl; 
+    } 
+ 
+    int getEnergyPoints() const { 
+        return energyPoints; 
+    } 
+ 
+private: 
+    int energyPoints; 
+}; 
+
+
 class Character
 {
 private:
