@@ -82,42 +82,42 @@ public:
         this->money = money;
     }
 
-    void setname(string name)
+    void setName(string name)
     {
         this->name = name;
     }
 
-    string getname()
+    string getName()
     {
         return name;
     }
 
-    void setage(int age)
+    void setAge(int age)
     {
         this->age = age;
     }
 
-    int getage()
+    int getAge()
     {
         return age;
     }
 
-    void setgender(char gender)
+    void setGender(char gender)
     {
         this->gender = gender;
     }
 
-    char getgender()
+    char getGender()
     {
         return gender;
     }
 
-    void setlevel(int level)
+    void setLevel(int level)
     {
         this->level = level;
     }
 
-    int getlevel()
+    int getLevel()
     {
         return level;
     }
