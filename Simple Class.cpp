@@ -6,37 +6,37 @@ using namespace std;
 class Character
 {
 protected:
-    int Health;
-    int Energy;
+    int Stamina;
+    int HP;
     int Power;
 
 public:
     Character() = default;
 
-    Character(int health, int energy, int power)
+    Character(int stamina, int hp, int power)
     {
-        Health = health;
-        Energy = energy;
+        Stamina = stamina;
+        HP = hp;
         Power = power;
     }
 
-    void setHealth(int health)
+    void setStamina(int stamina)
     {
-        Health = health;
+        Stamina = stamina;
     }
 
-    int getHealth()
+    int getStamina()
     {
-        return Health;
+        return Stamina;
     }
-    void setEnergy(int energy)
+    void setHP(int hp)
     {
-        Energy = energy;
+        HP = hp;
     }
 
-    int getEnergy()
+    int getHP()
     {
-        return Energy;
+        return HP;
     }
 
     void setPower(int power)
@@ -55,14 +55,14 @@ public:
 
     bool isAlive()
     {
-        return Health > 0;
+        return Stamina > 0;
     }
 };
 
 class Zambie : public Character
 {
 public:
-    Zambie(int health, int energy, int power) : Character(health, energy, power) {}
+    Zambie(int stamina, int hp, int power) : Character(stamina, hp, power) {}
     Zambie() = default;
     void attack() override
     {
@@ -85,7 +85,7 @@ private:
 
 public:
 
-    Human(int health, int energy, int power, int warmskill, int coldskill) : Character(health, energy, power)
+    Human(int stamina, int hp, int power, int warmskill, int coldskill) : Character(stamina, hp, power)
     {
         Warmskill = warmskill;
         Coldskill = coldskill;
@@ -255,27 +255,27 @@ public:
     }
 };
 
-class HealthPotion : public Item
+class StaminaPotion : public Item
 {
 public:
-    HealthPotion(string name, int power, int count) : Item(name, power, count) {}
-    HealthPotion() = default;
+    StaminaPotion(string name, int power, int count) : Item(name, power, count) {}
+    StaminaPotion() = default;
 
     void heal()
     {
-        // cout << "Healing with " << getName() << " (Health Points: " << healthPoints << ")" << std::endl;
+        // cout << "Healing with " << getName() << " (Stamina Points: " << StaminaPoints << ")" << std::endl;
     }
 };
 
-class EnergyDrink : public Item
+class HPDrink : public Item
 {
 public:
-    EnergyDrink(string name, int power, int count, int energyPoints) : Item(name, power, count) {}
-    EnergyDrink() = default;
+    HPDrink(string name, int power, int count, int HPPoints) : Item(name, power, count) {}
+    HPDrink() = default;
 
-    void boostEnergy()
+    void boostHP()
     {
-        // cout << "Boosting energy with " << getName() << " (Energy Points: " << energyPoints << ")" << endl;
+        // cout << "Boosting hp with " << getName() << " (HP Points: " << HPPoints << ")" << endl;
     }
 };
 
@@ -293,11 +293,11 @@ public:
         // خودشو میذاریم جلوی خودش
         if (enemyType == "Human")
         {
-            Human enemy(human.getHealth(), human.getEnergy(), human.getPower(), human.getWarmskill(), human.getColdskill());
+            Human enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWarmskill(), human.getColdskill());
         }
         else
         {
-            Zambie enemy(human.getHealth(), human.getEnergy(), human.getPower());
+            Zambie enemy(human.getStamina(), human.getHP(), human.getPower());
         }
     }
 };
@@ -311,8 +311,8 @@ public:
     // // Attack
     void Attack(Character &attacker, Character &attacked, Weapon &weapon)
     {
-        // attackerEnergy - weaponPower
-        if (attacker.getEnergy() < weapon.getPower())
+        // attackerHP - weaponPower
+        if (attacker.getHP() < weapon.getPower())
         {
             cerr << "\n Low Enargy! \n Try Again. \n";
             return;
@@ -320,35 +320,35 @@ public:
 
         else
         {
-            int newEnergy = attacker.getEnergy() - weapon.getPower();
-            attacker.setEnergy(newEnergy);
+            int newHP = attacker.getHP() - weapon.getPower();
+            attacker.setHP(newHP);
         }
 
         // attakerPower "+" weaponPower
 
-        if ((attacker.getPower() + weapon.getPower()) > attacked.getHealth())
+        if ((attacker.getPower() + weapon.getPower()) > attacked.getStamina())
         {
-            attacked.setHealth(0);
+            attacked.setStamina(0);
         }
         else
         {
-            int newHealth = attacked.getHealth() - (attacker.getPower() + weapon.getPower());
-            attacked.setHealth(newHealth);
+            int newStamina = attacked.getStamina() - (attacker.getPower() + weapon.getPower());
+            attacked.setStamina(newStamina);
         }
     }
 };
 
 // ناقصه
-// void round(Human human, Player player, Character enemy, vector<Weapon> weapon, vector<EnergyDrink> energyDrink, vector<HealthPotion> healthPotion)
+// void round(Human human, Player player, Character enemy, vector<Weapon> weapon, vector<HPDrink> HPDrink, vector<StaminaPotion> StaminaPotion)
 // {
-//     // int enemyHealthy = enemy.getHealth();
-//     // int Health = human.getHealth();
-//     // int Energy = human.getEnergy();
+//     // int enemyStaminay = enemy.getStamina();
+//     // int Stamina = human.getStamina();
+//     // int HP = human.getHP();
 //     // int playerPower = human.getPower();
 //     cout << "status :" << endl
-//          << "Health :" << human.getHealth() << endl
-//          << "Energy :" << human.getEnergy() << endl
-//          << "enemy Health" << enemy.getHealth() << endl
+//          << "Stamina :" << human.getStamina() << endl
+//          << "HP :" << human.getHP() << endl
+//          << "enemy Stamina" << enemy.getStamina() << endl
 //          << "1. Attack" << endl
 //          << "2. Using items" << endl;
 //     //  cout << "3. Level up" << endl;
@@ -365,32 +365,32 @@ public:
 //         int i;
 //         cin >> i;
 //         if (i <= weapon.size())
-//             enemy.setHealth(enemy.getHealth() - (human.getPower() + weapon[i - 1].getPower()));
+//             enemy.setStamina(enemy.getStamina() - (human.getPower() + weapon[i - 1].getPower()));
 //         break;
 
 //     case 2:
-//         cout << "1. Energy Drink (" << energyDrink.size() << ")" << endl
-//              << "2. Health Potion (" << healthPotion.size() << ") \n";
+//         cout << "1. HP Drink (" << HPDrink.size() << ")" << endl
+//              << "2. Stamina Potion (" << StaminaPotion.size() << ") \n";
 //         int i;
 //         cin >> i;
 //         if (i == 1)
 //         {
-//             for (int i = 0; i < energyDrink.size(); i++)
+//             for (int i = 0; i < HPDrink.size(); i++)
 //             {
-//                 cout << i + 1 << ". " << energyDrink[i].getName() << endl;
+//                 cout << i + 1 << ". " << HPDrink[i].getName() << endl;
 //             }
 //             cin >> i;
-//             enemy.setHealth(human.getEnergy() + energyDrink[i - 1].getPower());
+//             enemy.setStamina(human.getHP() + HPDrink[i - 1].getPower());
 //         }
 
 //         else if (i == 2)
 //         {
-//             for (int i = 0; i < healthPotion.size(); i++)
+//             for (int i = 0; i < StaminaPotion.size(); i++)
 //             {
-//                 cout << i + 1 << ". " << healthPotion[i].getName() << endl;
+//                 cout << i + 1 << ". " << StaminaPotion[i].getName() << endl;
 //             }
 //             cin >> i;
-//             enemy.setHealth(human.getHealth() + healthPotion[i - 1].getPower());
+//             enemy.setStamina(human.getStamina() + StaminaPotion[i - 1].getPower());
 //         }
 //         break;
 
