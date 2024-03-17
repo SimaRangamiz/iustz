@@ -9,6 +9,7 @@ protected:
     int Stamina;
     int HP;
     int Power;
+    vector<Weapon> Weapons;
 
 public:
     Character() = default;
@@ -49,6 +50,21 @@ public:
         return Power;
     }
 
+    void addWeapon(Weapon newWeapon)
+    {
+        Weapons.push_back(newWeapon);
+    }
+
+    void setWeapon(vector<Weapon> weapons)
+    {
+        Weapons = weapons;
+    }
+
+    vector<Weapon> getWeapon()
+    {
+        return Weapons;
+    }
+
     virtual void attack()
     {
     }
@@ -84,7 +100,6 @@ private:
     int Coldskill;
 
 public:
-
     Human(int stamina, int hp, int power, int warmskill, int coldskill) : Character(stamina, hp, power)
     {
         Warmskill = warmskill;
@@ -305,13 +320,11 @@ public:
 class Controller
 {
 public:
-    
-
     // simple rols
     // // Attack
     void Attack(Character &attacker, Character &attacked, Weapon &weapon)
     {
-        // attackerHP - weaponPower
+        // attackerHP =- weaponPower
         if (attacker.getHP() < weapon.getPower())
         {
             cerr << "\n Low Enargy! \n Try Again. \n";
