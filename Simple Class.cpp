@@ -3,6 +3,93 @@
 #include <vector>
 using namespace std;
 
+//////////////////////////////////////////////////////////Item
+
+class Item
+{
+protected:
+    string Name;
+    int Power;
+    int Count;
+
+public:
+    Item(string name, int power, int count)
+    {
+        Name = name;
+        Power = power;
+        Count = count;
+    }
+
+    Item() = default;
+
+    string getName()
+    {
+        return Name;
+    }
+    void setName(string name)
+    {
+        Name = name;
+    }
+
+    void setPower(int power)
+    {
+        Power = power;
+    }
+    int getPower()
+    {
+        return Power;
+    }
+    void setCount(int count)
+    {
+        Count = count;
+    }
+    int getCount()
+    {
+        return Count;
+    }
+
+    void use()
+    {
+        // cout << "Using " << name << endl;
+    }
+};
+
+class Weapon : public Item
+{
+public:
+    Weapon(string name, int power, int count) : Item(name, power, count) {}
+    Weapon() = default;
+
+    void attack()
+    {
+        // cout << "Attacking with " << getName() << " (Power: " << power << ")" << endl;
+    }
+};
+
+class StaminaPotion : public Item
+{
+public:
+    StaminaPotion(string name, int power, int count) : Item(name, power, count) {}
+    StaminaPotion() = default;
+
+    void heal()
+    {
+        // cout << "Healing with " << getName() << " (Stamina Points: " << StaminaPoints << ")" << std::endl;
+    }
+};
+
+class HPDrink : public Item
+{
+public:
+    HPDrink(string name, int power, int count, int HPPoints) : Item(name, power, count) {}
+    HPDrink() = default;
+
+    void boostHP()
+    {
+        // cout << "Boosting hp with " << getName() << " (HP Points: " << HPPoints << ")" << endl;
+    }
+};
+/////////////////////////////////////////////// Charcater
 class Character
 {
 protected:
@@ -13,12 +100,19 @@ protected:
 
 public:
     Character() = default;
-
     Character(int stamina, int hp, int power)
     {
         Stamina = stamina;
         HP = hp;
         Power = power;
+    }
+
+    Character(int stamina, int hp, int power, vector<Weapon> weapons)
+    {
+        Stamina = stamina;
+        HP = hp;
+        Power = power;
+        Weapons = weapons;
     }
 
     void setStamina(int stamina)
@@ -79,6 +173,7 @@ class Zambie : public Character
 {
 public:
     Zambie(int stamina, int hp, int power) : Character(stamina, hp, power) {}
+    Zambie(int stamina, int hp, int power, vector<Weapon> weapons) : Character(stamina, hp, power, weapons) {}
     Zambie() = default;
     void attack() override
     {
@@ -101,6 +196,11 @@ private:
 
 public:
     Human(int stamina, int hp, int power, int warmskill, int coldskill) : Character(stamina, hp, power)
+    {
+        Warmskill = warmskill;
+        Coldskill = coldskill;
+    }
+    Human(int stamina, int hp, int power, vector<Weapon> weapons, int warmskill, int coldskill) : Character(stamina, hp, power, weapons)
     {
         Warmskill = warmskill;
         Coldskill = coldskill;
@@ -207,92 +307,7 @@ public:
     }
 };
 
-//////////////////////////////////////////////////////////Item
 
-class Item
-{
-protected:
-    string Name;
-    int Power;
-    int Count;
-
-public:
-    Item(string name, int power, int count)
-    {
-        Name = name;
-        Power = power;
-        Count = count;
-    }
-
-    Item() = default;
-
-    string getName()
-    {
-        return Name;
-    }
-    void setName(string name)
-    {
-        Name = name;
-    }
-
-    void setPower(int power)
-    {
-        Power = power;
-    }
-    int getPower()
-    {
-        return Power;
-    }
-    void setCount(int count)
-    {
-        Count = count;
-    }
-    int getCount()
-    {
-        return Count;
-    }
-
-    void use()
-    {
-        // cout << "Using " << name << endl;
-    }
-};
-
-class Weapon : public Item
-{
-public:
-    Weapon(string name, int power, int count) : Item(name, power, count) {}
-    Weapon() = default;
-
-    void attack()
-    {
-        // cout << "Attacking with " << getName() << " (Power: " << power << ")" << endl;
-    }
-};
-
-class StaminaPotion : public Item
-{
-public:
-    StaminaPotion(string name, int power, int count) : Item(name, power, count) {}
-    StaminaPotion() = default;
-
-    void heal()
-    {
-        // cout << "Healing with " << getName() << " (Stamina Points: " << StaminaPoints << ")" << std::endl;
-    }
-};
-
-class HPDrink : public Item
-{
-public:
-    HPDrink(string name, int power, int count, int HPPoints) : Item(name, power, count) {}
-    HPDrink() = default;
-
-    void boostHP()
-    {
-        // cout << "Boosting hp with " << getName() << " (HP Points: " << HPPoints << ")" << endl;
-    }
-};
 
 //////////////////////////////////////////////////////////round
 
