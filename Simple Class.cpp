@@ -92,7 +92,9 @@ public:
         // cout << "Boosting hp with " << getName() << " (HP Points: " << HPPoints << ")" << endl;
     }
 };
+
 /////////////////////////////////////////////// Charcater
+
 class Character
 {
 protected:
@@ -211,10 +213,12 @@ public:
         Coldskill = coldskill;
     }
 
-    Human(int stamina, int hp, int power, int warmskill, int coldskill) : Character(stamina, hp, power)
+    Human(int stamina, int hp, int power, vector<Weapon> weapons, vector<StaminaPotion> staminaitems, vector<HPDrink> hpitems, int warmskill, int coldskill) : Character(stamina, hp, power, weapons)
     {
         Warmskill = warmskill;
         Coldskill = coldskill;
+        Staminaitems = staminaitems;
+        HPitems = hpitems;
     }
     Human() = default;
 
@@ -400,15 +404,15 @@ class Factory
 private:
     Human human;
     Player player;
-    string enemyType;
+    // string enemyType;
     Model model;
 
 public:
-    Factory(Human human1, Player player1, string enemyType1, Model model1)
+    Factory(Human human1, Player player1, Model model1)
     {
         human = human1;
         player = player1;
-        enemyType = enemyType1;
+        // enemyType = enemyType1;
         model = model1;
         model.setHuman(human);
         model.setPlayer(player);
@@ -419,17 +423,20 @@ public:
     Character factory()
     {
         // خودشو میذاریم جلوی خودش
-        if (enemyType == "Human")
-        {
-            Human enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon(), human.getWarmskill(), human.getColdskill());
+        // if (enemyType == "Human")
+        // {
+        //     Human enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon(), human.getWarmskill(), human.getColdskill());
+        //     return enemy;
+        // }
+        // else
+        // {
+        //     Zambie enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon());
+        //     return enemy;
+        // }
+        Character enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon());
             return enemy;
-        }
-        else
-        {
-            Zambie enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon());
-            return enemy;
-        }
     }
+
 };
 
 class Controller
@@ -466,82 +473,77 @@ public:
     }
 };
 
-// class view
-// {
-// private:
-//     Human human;
-//     Player player;
-//     Character enemy;
-//     Controller controller;
+class view
+{
+private:
+    Model model;
+    Controller controller;
 
-// public:
-//     view(Human human1, Player player1, Character enemy1, Controller controller1)
-//     {
-//         human = human1;
-//         player = player1;
-//         enemy = enemy1;
-//         controller = controller1;
-//     }
+public:
+    view(Model model1, Controller controller1)
+    {
+        model = model1;
+        controller = controller1;
+    }
 
-//     void round()
-//     {
-//         cout << "status :" << endl
-//              << "Stamina :" << human.getStamina() << endl
-//              << "HP :" << human.getHP() << endl
-//              << "enemy Stamina : " << enemy.getStamina() << endl
-//              << "eney HP : " << enemy.getHP() << endl
-//              << "1. Attack" << endl
-//              << "2. Using items" << endl;
-//         //  cout << "3. Level up" << endl;
-//         int command;
-//         cin >> command;
-//         switch (command)
-//         {
-//         case 1:
-//             cout << "Weapons :" << endl;
-//             for (int i = 0; i < human.getWeapon().size(); i++)
-//             {
-//                 cout << i + 1 << ". " << human.getWeapon()[i].getName() << endl
-//                      << "   - power : " << human.getWeapon()[i].getPower()
-//                      << "   - count : " << human.getWeapon()[i].getCount();
-//             }
-//             int i;
-//             cin >> i;
-//             if (i <= human.getWeapon().size())
+    void round()
+    {
+        cout << "status :" << endl
+             << "Stamina :" << model.getHuman().getStamina() << endl
+             << "HP :" << model.getHuman().getHP() << endl
+             << "enemy Stamina : " << model.getEnemy().getStamina() << endl
+             << "eney HP : " << model.getEnemy().getHP() << endl
+             << "1. Attack" << endl
+             << "2. Using items" << endl;
+        //  cout << "3. Level up" << endl;
+        int command;
+        cin >> command;
+        switch (command)
+        {
+        case 1:
+            cout << "Weapons :" << endl;
+            for (int i = 0; i < model.getHuman().getWeapon().size(); i++)
+            {
+                cout << i + 1 << ". " << model.getHuman().getWeapon()[i].getName() << endl
+                     << "   - power : " << model.getHuman().getWeapon()[i].getPower()
+                     << "   - count : " << model.getHuman().getWeapon()[i].getCount();
+            }
+            int i;
+            cin >> i;
+            if (i <= model.getHuman().getWeapon().size())
 
-//                 break;
-//         case 2:
-//             cout << "1. HP Drink (" << HPDrink.size() << ")" << endl
-//                  << "2. Stamina Potion (" << StaminaPotion.size() << ") \n";
-//             int i;
-//             cin >> i;
-//             if (i == 1)
-//             {
-//                 for (int i = 0; i < HPDrink.size(); i++)
-//                 {
-//                     cout << i + 1 << ". " << HPDrink[i].getName() << endl;
-//                 }
-//                 cin >> i;
-//                 enemy.setStamina(human.getHP() + HPDrink[i - 1].getPower());
-//             }
+                break;
+        case 2:
+            cout << "1. HP Drink (" << model.getHuman().getHPItems().size() << ")" << endl
+                 << "2. Stamina Potion (" << model.getHuman().getStaminaItems().size() << ") \n";
+            cin >> i;
+            if (i == 1)
+            {
+                for (int i = 0; i < model.getHuman().getHPItems().size(); i++)
+                {
+                    cout << i + 1 << ". " << model.getHuman().getHPItems()[i].getName() << endl;
+                }
+                cin >> i;
+                model.getHuman().setHP(model.getHuman().getHP() + model.getHuman().getHPItems()[i - 1].getPower());
+            }
 
-//             else if (i == 2)
-//             {
-//                 for (int i = 0; i < StaminaPotion.size(); i++)
-//                 {
-//                     cout << i + 1 << ". " << StaminaPotion[i].getName() << endl;
-//                 }
-//                 cin >> i;
-//                 enemy.setStamina(human.getStamina() + StaminaPotion[i - 1].getPower());
-//             }
-//             break;
+            else if (i == 2)
+            {
+                for (int i = 0; i < model.getHuman().getStaminaItems().size(); i++)
+                {
+                    cout << i + 1 << ". " << model.getHuman().getStaminaItems()[i].getName() << endl;
+                }
+                cin >> i;
+                model.getHuman().setStamina(model.getHuman().getHP() + model.getHuman().getHPItems()[i - 1].getPower());
+            }
+            break;
 
-//         default:
-//             cerr << "Incorrect command";
-//             break;
-//         }
-//     }
-// };
+        default:
+            cerr << "Incorrect command";
+            break;
+        }
+    }
+};
 
 int main()
 {
@@ -555,9 +557,12 @@ int main()
 
     Player zar("zar", 19, 'w', 1, 100);
     Model model;
-    Factory factory1(zahra, zar, "Human", model);
+    Factory factory1(zahra, zar, model);
     Character enemy = factory1.factory();
-    model.setEnemy(enemy);
-    cout << model.getEnemy().getHP() << endl
-         << enemy.getWeapon()[2].getName();
+    Controller controller;
+    controller.Attack(zahra, enemy, w1);
+    cout << zahra.getHP() << endl << zahra.getStamina() << endl
+    << enemy.getStamina() << endl << enemy.getHP();
 }
+
+
