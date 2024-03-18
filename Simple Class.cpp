@@ -194,6 +194,9 @@ private:
     int Warmskill;
     int Coldskill;
 
+    vector<StaminaPotion> Staminaitems;
+    vector<HPDrink> HPitems;
+
 public:
     Human(int stamina, int hp, int power, int warmskill, int coldskill) : Character(stamina, hp, power)
     {
@@ -201,6 +204,12 @@ public:
         Coldskill = coldskill;
     }
     Human(int stamina, int hp, int power, vector<Weapon> weapons, int warmskill, int coldskill) : Character(stamina, hp, power, weapons)
+    {
+        Warmskill = warmskill;
+        Coldskill = coldskill;
+    }
+
+    Human(int stamina, int hp, int power, int warmskill, int coldskill) : Character(stamina, hp, power)
     {
         Warmskill = warmskill;
         Coldskill = coldskill;
@@ -225,6 +234,36 @@ public:
     int getColdskill()
     {
         return Coldskill;
+    }
+
+    void addStaminaItem(StaminaPotion newStaminaitem)
+    {
+        Staminaitems.push_back(newStaminaitem);
+    }
+
+    void setStaminaItems(vector<StaminaPotion> newStaminaitems)
+    {
+        Staminaitems = newStaminaitems;
+    }
+
+    vector<StaminaPotion> getStaminaItems()
+    {
+        return Staminaitems;
+    }
+
+    void addHPItem(HPDrink newHpitem)
+    {
+        HPitems.push_back(newHpitem);
+    }
+
+    void setHPItems(vector<HPDrink> newHpitems)
+    {
+        HPitems = newHpitems;
+    }
+
+    vector<HPDrink> getHPItems()
+    {
+        return HPitems;
     }
 
     void attack() override
