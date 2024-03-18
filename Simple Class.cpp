@@ -56,6 +56,9 @@ public:
 
 class Weapon : public Item
 {
+private:
+    char Model;
+
 public:
     Weapon(string name, int power, int count) : Item(name, power, count) {}
     Weapon() = default;
@@ -106,7 +109,6 @@ public:
         HP = hp;
         Power = power;
     }
-
     Character(int stamina, int hp, int power, vector<Weapon> weapons)
     {
         Stamina = stamina;
@@ -307,27 +309,86 @@ public:
     }
 };
 
-
-
 //////////////////////////////////////////////////////////round
+class Model
+{
+private:
+    Human human;
+    Player player;
+    Character enemy;
+
+public:
+    // Model(Human human1, Player player1)
+    // {
+    //     human = human1;
+    //     player = player1;
+    // }
+    Model() = default;
+
+    void setHuman (Human human1)
+    {
+        human = human1;
+    }
+
+    void setPlayer (Player player1)
+    {
+        player = player1;
+    }
+
+    void setEnemy(Character enemy1)
+    {
+        enemy = enemy1;
+    }
+
+    Human getHuman ()
+    {
+        return human;
+    }
+
+    Player getPlayer ()
+    {
+        return player;
+    }
+
+    Character getEnemy ()
+    {
+        return enemy;
+    }
+};
 
 class Factory
 {
-public:
+private:
     Human human;
     Player player;
     string enemyType;
+    Model model;
+
+public:
+    Factory(Human human1, Player player1, string enemyType1, Model model1)
+    {
+        human = human1;
+        player = player1;
+        enemyType = enemyType1;
+        model = model1;
+        model.setHuman(human);
+        model.setPlayer(player);
+    }
+
+    Factory() = default;
 
     Character factory()
     {
         // خودشو میذاریم جلوی خودش
         if (enemyType == "Human")
         {
-            Human enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWarmskill(), human.getColdskill());
+            Human enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon(), human.getWarmskill(), human.getColdskill());
+            return enemy;
         }
         else
         {
-            Zambie enemy(human.getStamina(), human.getHP(), human.getPower());
+            Zambie enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon());
+            return enemy;
         }
     }
 };
@@ -366,68 +427,98 @@ public:
     }
 };
 
-// ناقصه
-// void round(Human human, Player player, Character enemy, vector<Weapon> weapon, vector<HPDrink> HPDrink, vector<StaminaPotion> StaminaPotion)
+// class view
 // {
-//     // int enemyStaminay = enemy.getStamina();
-//     // int Stamina = human.getStamina();
-//     // int HP = human.getHP();
-//     // int playerPower = human.getPower();
-//     cout << "status :" << endl
-//          << "Stamina :" << human.getStamina() << endl
-//          << "HP :" << human.getHP() << endl
-//          << "enemy Stamina" << enemy.getStamina() << endl
-//          << "1. Attack" << endl
-//          << "2. Using items" << endl;
-//     //  cout << "3. Level up" << endl;
-//     int command;
-//     cin >> command;
-//     switch (command)
+// private:
+//     Human human;
+//     Player player;
+//     Character enemy;
+//     Controller controller;
+
+// public:
+//     view(Human human1, Player player1, Character enemy1, Controller controller1)
 //     {
-//     case 1:
-//         cout << "Weapons :" << endl;
-//         for (int i = 0; i < weapon.size(); i++)
-//         {
-//             cout << i + 1 << ". " << weapon[i].getName() << endl;
-//         }
-//         int i;
-//         cin >> i;
-//         if (i <= weapon.size())
-//             enemy.setStamina(enemy.getStamina() - (human.getPower() + weapon[i - 1].getPower()));
-//         break;
-
-//     case 2:
-//         cout << "1. HP Drink (" << HPDrink.size() << ")" << endl
-//              << "2. Stamina Potion (" << StaminaPotion.size() << ") \n";
-//         int i;
-//         cin >> i;
-//         if (i == 1)
-//         {
-//             for (int i = 0; i < HPDrink.size(); i++)
-//             {
-//                 cout << i + 1 << ". " << HPDrink[i].getName() << endl;
-//             }
-//             cin >> i;
-//             enemy.setStamina(human.getHP() + HPDrink[i - 1].getPower());
-//         }
-
-//         else if (i == 2)
-//         {
-//             for (int i = 0; i < StaminaPotion.size(); i++)
-//             {
-//                 cout << i + 1 << ". " << StaminaPotion[i].getName() << endl;
-//             }
-//             cin >> i;
-//             enemy.setStamina(human.getStamina() + StaminaPotion[i - 1].getPower());
-//         }
-//         break;
-
-//     default:
-//         cerr << "Incorrect command";
-//         break;
+//         human = human1;
+//         player = player1;
+//         enemy = enemy1;
+//         controller = controller1;
 //     }
-// }
+
+//     void round()
+//     {
+//         cout << "status :" << endl
+//              << "Stamina :" << human.getStamina() << endl
+//              << "HP :" << human.getHP() << endl
+//              << "enemy Stamina : " << enemy.getStamina() << endl
+//              << "eney HP : " << enemy.getHP() << endl
+//              << "1. Attack" << endl
+//              << "2. Using items" << endl;
+//         //  cout << "3. Level up" << endl;
+//         int command;
+//         cin >> command;
+//         switch (command)
+//         {
+//         case 1:
+//             cout << "Weapons :" << endl;
+//             for (int i = 0; i < human.getWeapon().size(); i++)
+//             {
+//                 cout << i + 1 << ". " << human.getWeapon()[i].getName() << endl
+//                      << "   - power : " << human.getWeapon()[i].getPower()
+//                      << "   - count : " << human.getWeapon()[i].getCount();
+//             }
+//             int i;
+//             cin >> i;
+//             if (i <= human.getWeapon().size())
+
+//                 break;
+//         case 2:
+//             cout << "1. HP Drink (" << HPDrink.size() << ")" << endl
+//                  << "2. Stamina Potion (" << StaminaPotion.size() << ") \n";
+//             int i;
+//             cin >> i;
+//             if (i == 1)
+//             {
+//                 for (int i = 0; i < HPDrink.size(); i++)
+//                 {
+//                     cout << i + 1 << ". " << HPDrink[i].getName() << endl;
+//                 }
+//                 cin >> i;
+//                 enemy.setStamina(human.getHP() + HPDrink[i - 1].getPower());
+//             }
+
+//             else if (i == 2)
+//             {
+//                 for (int i = 0; i < StaminaPotion.size(); i++)
+//                 {
+//                     cout << i + 1 << ". " << StaminaPotion[i].getName() << endl;
+//                 }
+//                 cin >> i;
+//                 enemy.setStamina(human.getStamina() + StaminaPotion[i - 1].getPower());
+//             }
+//             break;
+
+//         default:
+//             cerr << "Incorrect command";
+//             break;
+//         }
+//     }
+// };
 
 int main()
 {
+    Human zahra(50, 40, 10, 5, 4);
+    Weapon w1("w1", 5, 2);
+    Weapon w2("w2", 4, 1);
+    vector<Weapon> weapons = {w1, w2};
+    zahra.setWeapon(weapons);
+    Weapon w3("w3", 10, 1);
+    zahra.addWeapon(w3);
+
+    Player zar("zar", 19, 'w', 1, 100);
+    Model model;
+    Factory factory1(zahra, zar, "Human", model);
+    Character enemy = factory1.factory();
+    model.setEnemy(enemy);
+    cout << model.getEnemy().getHP() << endl
+         << enemy.getWeapon()[2].getName();
 }
