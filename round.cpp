@@ -564,7 +564,7 @@ public:
                 cout << "Stamina: " << model->getHuman().getStamina() << endl
                      << "HP: " << model->getHuman().getHP() << " (" << hp << ")" << endl
                      << "enemy Stamina: " << model->getEnemy().getStamina() << " (" << enemyStamina << ")" << endl
-                     << "eney HP: " << model->getEnemy().getHP() << endl;
+                     << "enemy HP: " << model->getEnemy().getHP() << endl;
             }
             else
             {
