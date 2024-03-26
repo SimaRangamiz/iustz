@@ -595,14 +595,20 @@ public:
                     cout << "Available Stamina Potions:\n";
                     for (int i = 0; i < model->getHuman().getStaminaItems().size(); i++)
                     {
-                        cout << i + 1 << ". " << model->getHuman().getStaminaItems()[i].getName() << endl;
+                        if (model->getHuman().getStaminaItems()[i].getCount() > 0)
+                            cout << i + 1 << ". " << model->getHuman().getStaminaItems()[i].getName() << endl
+                                 << " -power: " << model->getHuman().getStaminaItems()[i].getPower() << endl
+                                 << " -count: " << model->getHuman().getStaminaItems()[i].getCount() << endl;
                     }
                     int potionChoice;
                     cin >> potionChoice;
                     if (potionChoice > 0 && potionChoice <= model->getHuman().getStaminaItems().size())
                     {
                         
-                        // model->getHuman().setStamina(model->getHuman().getStamina() + model->getHuman().getStaminaItems()[potionChoice - 1].getPower());
+                        if (model->getHuman().getStaminaItems()[potionChoice - 1].getPower() > 0)
+                            model->human.setStamina(model->getHuman().getStamina() + model->getHuman().getStaminaItems()[potionChoice - 1].getPower());
+                        else
+                            cerr << "Not avalabe!/n";
                     }
                     else
                     {
