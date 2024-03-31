@@ -90,7 +90,7 @@ public:
 class HPDrink : public Item
 {
 public:
-    HPDrink(string name, int power, int count, int HPPoints, int price) : Item(name, power, count, price) {}
+    HPDrink(string name, int power, int count, int price) : Item(name, power, count, price) {}
     HPDrink() = default;
 
     void boostHP()
@@ -283,40 +283,6 @@ public:
     }
 };
 
-
-class Store
-{
-private:
-    vector<Item> items;
-
-public:
-    void addItemstolist(Item item)
-    {
-        items.push_back(item);
-    }
-    void displayItems() const
-    {
-        cout << "Items available in the store:" << endl;
-
-        for (const auto &item : items)
-        {
-            cout << "- " << item.getName() << " (Price: " << item.getPrice() << ",Power:" << item.getPower() << ")" << endl;
-        }
-    }
-
-     const Item* getItemByName(const string& name) const 
-     {
-        for (const auto &item : items) 
-        {
-            if (item.getName() == name) 
-            {
-                return &item;
-            }
-        }
-     }
-};
-
-
 class Player
 {
 private:
@@ -387,22 +353,24 @@ public:
         return Money;
     }
 
-    void BuyItem(const Item &item, Store &store) 
-    {
-        const Item* storeItem = store.getItemByName(item.getName());
+//     void BuyItem(Item &item, Store &store)
+//     {
+//         // Item *storeItem = store.getItemByName(item.getName());
 
-        if (storeItem && Money >= storeItem->getPrice()) 
-        {
-            Money -= storeItem->getPrice();
-            item.use();
-            cout << "The items you bought:" << endl
-                 << "- " << item.getName() << " =" <<" (Power: " << item.getPower() << ", Price: " << item.getPrice() << ")" << ". Your Money : " << Money << endl;
-        } 
-        else 
-        {
-            cout << "You don't have enough money to buy " << item.getName() << "." << endl;
-        }
-    }
+//         if (Money >= storeItem->getPrice())
+//         {
+//             Money -= storeItem->getPrice();
+//             // Human.add...(item);
+//             cout << "The items you bought:" << endl
+//                  << "- " << item.getName() << " ="
+//                  << " (Power: " << item.getPower() << ", Price: " << item.getPrice() << ")"
+//                  << ". Your Money : " << Money << endl;
+//         }
+//         else
+//         {
+//             cout << "You don't have enough money to buy " << item.getName() << "." << endl;
+//         }
+//     }
 
     virtual void attack()
     {
@@ -456,6 +424,8 @@ public:
     }
     friend class Controller;
     friend class view;
+    friend class Store;
+
 };
 
 class Factory
@@ -574,6 +544,106 @@ public:
     }
 };
 
+class Store
+{
+private:
+    vector<StaminaPotion> Stamina;
+    vector<HPDrink> HP;
+    vector<Weapon> weapon;
+    Model *model;
+
+public:
+    Store (vector<StaminaPotion> stamina, vector<HPDrink> hp, vector<Weapon> weapon1, Model *model1)
+    {
+        Stamina= stamina;
+        HP = hp;
+        weapon = weapon1;
+        model = model1;
+    }
+    void addToHPList(HPDrink item)
+    {
+        HP.push_back(item);
+    }
+    void addToStaminaList(StaminaPotion item)
+    {
+        Stamina.push_back(item);
+    }
+    void addToWeaponList(Weapon item)
+    {
+        weapon.push_back(item);
+    }
+
+    void displayItems()
+    {
+        cout << "\"WELCOME TO OUR STORE!\"\nWhich one do you want?\n1. Weapon\n2. Stamina potion\n3. HP Drink\n"
+             << endl;
+        int command;
+        cin >> command;
+        switch (command)
+        {
+        case 1:
+            cout << "Weapon:\n";
+            for (int i = 0; i < weapon.size(); i++)
+            {
+                cout << i + 1 << "- " << weapon[i].getName() << " (Price: " << weapon[i].getPrice() << " , Power:" << weapon[i].getPower() << ")" << endl;
+            }
+            cin >> command;
+            model->human.addWeapon(weapon[command]);
+            model->player.setMoney(model->player.getMoney()-weapon[command].getPrice());
+            cout << "The item you bought:" << endl
+                 << "- " << weapon[command].getName()
+                 << " (Power: " << weapon[command].getPower() << ", Price: " << weapon[command].getPrice() << ")\n"
+                 << "- Your Money : " << model->player.getMoney() << endl;
+            break;
+
+        case 2:
+            cout << "Stamina potions:\n"
+                 << endl;
+            for (int i = 0; i < Stamina.size(); i++)
+            {
+                cout << i + 1 << "- " << Stamina[i].getName() << " (Price: " << Stamina[i].getPrice() << " , Power:" << Stamina[i].getPower() << ")" << endl;
+            }
+            cin >> command;
+            model->human.addStaminaItem(Stamina[command]);
+            model->player.setMoney(model->player.getMoney()-Stamina[command].getPrice());
+            cout << "The items you bought:" << endl
+                 << "- " << Stamina[command].getName()
+                 << " (Power: " << Stamina[command].getPower() << ", Price: " << Stamina[command].getPrice() << ")"
+                 << ". Your Money : " << model->player.getMoney() << endl;
+            break;
+
+        case 3:
+            cout << "HP Drinks" << endl;
+            for (int i = 0; i < HP.size(); i++)
+            {
+                cout << i + 1 << "- " << HP[i].getName() << " (Price: " << HP[i].getPrice() << " , Power:" << HP[i].getPower() << ")" << endl;
+            }
+            cin >> command;
+            model->human.addHPItem(HP[command]);
+            model->player.setMoney(model->player.getMoney()-HP[command].getPrice());
+            cout << "The items you bought:" << endl
+                 << "- " << HP[command].getName()
+                 << " (Power: " << HP[command].getPower() << ", Price: " << HP[command].getPrice() << ")"
+                 << ". Your Money : " << model->player.getMoney() << endl;
+            break;
+        case 4:
+            cerr << "Invalid command!";
+        }
+        
+    }
+
+    // Item *getItemByName(string name)
+    // {
+    //     for (int i = 0; i < items.size(); i++)
+    //     {
+    //         if (items[i].getName() == name)
+    //         {
+    //             return &items[i];
+    //         }
+    //     }
+    // }
+};
+
 class view
 {
 private:
@@ -683,12 +753,11 @@ public:
 int main()
 {
     Human zahra(50, 40, 10, 5, 4);
-    Weapon w1("w1", 5, 1);
-    Weapon w2("w2", 4, 1);
-    vector<Weapon> weapons = {w1, w2};
+    Weapon w1("w1", 5, 1, 10);
+    Weapon w2("w2", 4, 1, 10);
+    Weapon w3("w3", 10, 1, 10);
+    vector<Weapon> weapons = {w1, w2, w3};
     zahra.setWeapon(weapons);
-    Weapon w3("w3", 10, 1);
-    zahra.addWeapon(w3);
 
     Player zar("zar", 19, 'w', 1, 100);
     Model model1;
@@ -704,5 +773,18 @@ int main()
     // model->setEnemy(enemy);
     // model.setHuman(zahra);
     view view1(model, controller);
+    // view1.round();
+    StaminaPotion s1 ("s1", 10, 1, 5);
+    StaminaPotion s2 ("s2", 12, 1, 6);
+    StaminaPotion s3 ("s3", 14, 1, 7);
+    StaminaPotion s4 ("s4", 16, 1, 8);
+    HPDrink h1 ("h1", 10, 1, 5);
+    HPDrink h2 ("h2", 12, 1, 6);
+    HPDrink h3 ("h3", 14, 1, 7);
+    HPDrink h4 ("h4", 18, 1, 8);
+    vector <StaminaPotion> Stamina = {s1, s2, s3 ,s4};
+    vector <HPDrink> HP = {h1, h2, h3 ,h4};
+    Store store (Stamina, HP, weapons, model);
+    store.displayItems();
     view1.round();
 }
