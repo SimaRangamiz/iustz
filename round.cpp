@@ -433,7 +433,9 @@ public:
         }
         else
         {
-            Zambie enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon());
+            Zambie enemy(human.getStamina(), human.getHP(), human.getPower());
+            Weapon w("fist", 5, 1);
+            enemy.addWeapon(w);
             model->setEnemy(enemy);
         }
         // Character enemy(human.getStamina(), human.getHP(), human.getPower(), human.getWeapon());
@@ -453,13 +455,13 @@ public:
     }
     Controller() = default;
     // simple rols
-    // // Attack
+
     void Attack(char command, int index)
     {
-        // if c== A
+        // if c == A
         // attacker = Enemy
         // else
-        // attacker = Human
+        // attacker = human
         // attackerHP =- weaponPower
         if (command == 'A')
         {
@@ -481,6 +483,7 @@ public:
             {
                 model->human.setStamina(0);
             }
+
             else
             {
                 int newStamina = model->getHuman().getStamina() - (model->getEnemy().getPower() + model->getEnemy().getWeapon()[index].getPower());
@@ -532,11 +535,11 @@ public:
 
     void round()
     {
-        cout << "status :" << endl
-             << "Stamina :" << model->getHuman().getStamina() << endl
-             << "HP :" << model->getHuman().getHP() << endl
-             << "enemy Stamina : " << model->getEnemy().getStamina() << endl
-             << "eney HP : " << model->getEnemy().getHP() << endl
+        cout << "status: " << endl
+             << "Stamina: " << model->getHuman().getStamina() << endl
+             << "HP: " << model->getHuman().getHP() << endl
+             << "enemy Stamina: " << model->getEnemy().getStamina() << endl
+             << "enemy HP: " << model->getEnemy().getHP() << endl
              << "1. Attack" << endl
              << "2. Using items" << endl;
         int hp = model->getHuman().getHP();
@@ -558,13 +561,15 @@ public:
             }
             int i;
             cin >> i;
-            if (i <= model->getHuman().getWeapon().size())
+            if (i <= model->getHuman().getWeapon().size() && i > 0)
             {
-                controller.Attack('B', i - 1);
+                controller.Attack('A', 0);
                 cout << "Stamina: " << model->getHuman().getStamina() << endl
                      << "HP: " << model->getHuman().getHP() << " (" << hp << ")" << endl
                      << "enemy Stamina: " << model->getEnemy().getStamina() << " (" << enemyStamina << ")" << endl
                      << "enemy HP: " << model->getEnemy().getHP() << endl;
+
+                     
             }
             else
             {
@@ -603,6 +608,7 @@ public:
             round();
             break;
         }
+
     }
 };
 
@@ -621,10 +627,10 @@ int main()
     Model *model = &model1;
     Factory factory1(zahra, zar, model, "Human");
     factory1.factory();
+
     // Character enemy = factory1.factory();
     // model.setEnemy(factory1.factory());
     // model.setHuman(zahra);
-
     Controller controller(model);
     // controller.Attack('A', 0);
     // model->setEnemy(enemy);
