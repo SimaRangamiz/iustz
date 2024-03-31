@@ -579,28 +579,77 @@ public:
             break;
 
         case 2:
-            cout << "1. HP Drink (" << model->getHuman().getHPItems().size() << ")" << endl
-                 << "2. Stamina Potion (" << model->getHuman().getStaminaItems().size() << ") \n";
-            // cin >> i;
-            // if (i == 1)
-            // {
-            //     for (int i = 0; i < model->getHuman().getHPItems().size(); i++)
-            //     {
-            //         cout << i + 1 << ". " << model->getHuman().getHPItems()[i].getName() << endl;
-            //     }
-            //     cin >> i;
-            //     model->getHuman().setHP(model->getHuman().getHP() + model->getHuman().getHPItems()[i - 1].getPower());
-            // }
+            int choice;
+            cout << "Choose an item to use:\n";
+            cout << "1. Stamina Potion\n";
+            cout << "2. HP Drink\n";
+            cin >> choice;
+            if (choice == 1)
+            {
+                // if StaminaPotion was chosen:
+                if (model->getHuman().getStaminaItems().empty())
+                {
+                    cout << "No Stamina Potion available!\n";
+                }
+                else
+                {
+                    cout << "Available Stamina Potions:\n";
+                    for (int i = 0; i < model->getHuman().getStaminaItems().size(); i++)
+                    {
+                        if (model->getHuman().getStaminaItems()[i].getCount() > 0)
+                            cout << i + 1 << ". " << model->getHuman().getStaminaItems()[i].getName() << endl
+                                 << " -power: " << model->getHuman().getStaminaItems()[i].getPower() << endl
+                                 << " -count: " << model->getHuman().getStaminaItems()[i].getCount() << endl;
+                    }
+                    int potionChoice;
+                    cin >> potionChoice;
+                    if (potionChoice > 0 && potionChoice <= model->getHuman().getStaminaItems().size())
+                    {
+                        
+                        if (model->getHuman().getStaminaItems()[potionChoice - 1].getPower() > 0)
+                            model->human.setStamina(model->getHuman().getStamina() + model->getHuman().getStaminaItems()[potionChoice - 1].getPower());
+                        else
+                            cerr << "Not avalabe!/n";
+                    }
+                    else
+                    {
+                        cerr << "Invalid choice!\n";
+                    }
+                }
+            }
+            else if (choice == 2)
+            {
+                // if HPdrink was chosen:
 
-            // else if (i == 2)
-            // {
-            //     for (int i = 0; i < model->getHuman().getStaminaItems().size(); i++)
-            //     {
-            //         cout << i + 1 << ". " << model->getHuman().getStaminaItems()[i].getName() << endl;
-            //     }
-            //     cin >> i;
-            //     model->getHuman().setStamina(model->getHuman().getHP() + model->getHuman().getHPItems()[i - 1].getPower());
-            // }
+                if (model->getHuman().getHPItems().empty())
+                {
+                    cout << "No HP Drink available!\n";
+                }
+                else
+                {
+                    
+                    cout << "Available HP Drinks:\n";
+                    for (int i = 0; i < model->getHuman().getHPItems().size(); i++)
+                    {
+                        cout << i + 1 << ". " << model->getHuman().getHPItems()[i].getName() << endl;
+                    }
+                    int drinkChoice;
+                    cin >> drinkChoice;
+                    if (drinkChoice > 0 && drinkChoice <= model->getHuman().getHPItems().size())
+                    {
+                        
+                        model->human.setHP(model->getHuman().getHP() + model->getHuman().getHPItems()[drinkChoice - 1].getPower());
+                    }
+                    else
+                    {
+                        cerr << "Invalid choice!\n";
+                    }
+                }
+            }
+            else
+            {
+                cerr << "Invalid choice!\n";
+            }
             break;
 
         default:
@@ -608,7 +657,6 @@ public:
             round();
             break;
         }
-
     }
 };
 
