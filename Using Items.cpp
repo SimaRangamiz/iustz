@@ -637,7 +637,7 @@ public:
                     if (drinkChoice > 0 && drinkChoice <= model->getHuman().getHPItems().size())
                     {
                         
-                        // model->getHuman().setHP(model->getHuman().getHP() + model->getHuman().getHPItems()[drinkChoice - 1].getPower());
+                        model->human.setHP(model->getHuman().getHP() + model->getHuman().getHPItems()[drinkChoice - 1].getPower());
                     }
                     else
                     {
@@ -649,28 +649,6 @@ public:
             {
                 cerr << "Invalid choice!\n";
             }
-            break;
-
-            // cin >> i;
-            // if (i == 1)
-            // {
-            //     for (int i = 0; i < model->getHuman().getHPItems().size(); i++)
-            //     {
-            //         cout << i + 1 << ". " << model->getHuman().getHPItems()[i].getName() << endl;
-            //     }
-            //     cin >> i;
-            //     model->getHuman().setHP(model->getHuman().getHP() + model->getHuman().getHPItems()[i - 1].getPower());
-            // }
-
-            // else if (i == 2)
-            // {
-            //     for (int i = 0; i < model->getHuman().getStaminaItems().size(); i++)
-            //     {
-            //         cout << i + 1 << ". " << model->getHuman().getStaminaItems()[i].getName() << endl;
-            //     }
-            //     cin >> i;
-            //     model->getHuman().setStamina(model->getHuman().getHP() + model->getHuman().getHPItems()[i - 1].getPower());
-            // }
             break;
 
         default:
