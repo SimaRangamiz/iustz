@@ -11,13 +11,15 @@ protected:
     string Name;
     int Power;
     int Count;
+    int Price;
 
 public:
-    Item(string name, int power, int count)
+    Item(string name, int power, int count, int price)
     {
         Name = name;
         Power = power;
         Count = count;
+        Price = price;
     }
 
     Item() = default;
@@ -47,7 +49,10 @@ public:
     {
         return Count;
     }
-
+    int getPrice() const
+    {
+        return Price;
+    }
     void use()
     {
         // cout << "Using " << name << endl;
@@ -60,7 +65,7 @@ private:
     char Model;
 
 public:
-    Weapon(string name, int power, int count) : Item(name, power, count) {}
+    Weapon(string name, int power, int count, int price) : Item(name, power, count, price) {}
     Weapon() = default;
 
     void attack()
@@ -72,7 +77,7 @@ public:
 class StaminaPotion : public Item
 {
 public:
-    StaminaPotion(string name, int power, int count) : Item(name, power, count) {}
+    StaminaPotion(string name, int power, int count, int price) : Item(name, power, count, price) {}
     StaminaPotion() = default;
 
     void heal()
@@ -84,7 +89,7 @@ public:
 class HPDrink : public Item
 {
 public:
-    HPDrink(string name, int power, int count, int HPPoints) : Item(name, power, count) {}
+    HPDrink(string name, int power, int count, int price) : Item(name, power, count, price) {}
     HPDrink() = default;
 
     void boostHP()
@@ -399,6 +404,7 @@ public:
     }
     friend class Controller;
     friend class view;
+    friend class Store;
 };
 
 class Factory
@@ -516,6 +522,94 @@ public:
                 int newStamina = model->getEnemy().getStamina() - (model->getHuman().getPower() + model->getHuman().getWeapon()[index].getPower());
                 model->enemy.setStamina(newStamina);
             }
+        }
+    }
+};
+
+class Store
+{
+private:
+    vector<StaminaPotion> Stamina;
+    vector<HPDrink> HP;
+    vector<Weapon> weapon;
+    Model *model;
+
+public:
+    Store(vector<StaminaPotion> stamina, vector<HPDrink> hp, vector<Weapon> weapon1, Model *model1)
+    {
+        Stamina = stamina;
+        HP = hp;
+        weapon = weapon1;
+        model = model1;
+    }
+    void addToHPList(HPDrink item)
+    {
+        HP.push_back(item);
+    }
+    void addToStaminaList(StaminaPotion item)
+    {
+        Stamina.push_back(item);
+    }
+    void addToWeaponList(Weapon item)
+    {
+        weapon.push_back(item);
+    }
+
+    void displayItems()
+    {
+        cout << "\"WELCOME TO OUR STORE!\"\nWhich one do you want?\n1. Weapon\n2. Stamina potion\n3. HP Drink\n"
+             << endl;
+        int command;
+        cin >> command;
+        switch (command)
+        {
+        case 1:
+            cout << "Weapon:\n";
+            for (int i = 0; i < weapon.size(); i++)
+            {
+                cout << i + 1 << "- " << weapon[i].getName() << " (Price: " << weapon[i].getPrice() << " , Power:" << weapon[i].getPower() << ")" << endl;
+            }
+            cin >> command;
+            model->human.addWeapon(weapon[command]);
+            model->player.setMoney(model->player.getMoney() - weapon[command].getPrice());
+            cout << "The item you bought:" << endl
+                 << "- " << weapon[command].getName()
+                 << " (Power: " << weapon[command].getPower() << ", Price: " << weapon[command].getPrice() << ")\n"
+                 << "- Your Money : " << model->player.getMoney() << endl;
+            break;
+
+        case 2:
+            cout << "Stamina potions:\n"
+                 << endl;
+            for (int i = 0; i < Stamina.size(); i++)
+            {
+                cout << i + 1 << "- " << Stamina[i].getName() << " (Price: " << Stamina[i].getPrice() << " , Power:" << Stamina[i].getPower() << ")" << endl;
+            }
+            cin >> command;
+            model->human.addStaminaItem(Stamina[command]);
+            model->player.setMoney(model->player.getMoney() - Stamina[command].getPrice());
+            cout << "The items you bought:" << endl
+                 << "- " << Stamina[command].getName()
+                 << " (Power: " << Stamina[command].getPower() << ", Price: " << Stamina[command].getPrice() << ")"
+                 << ". Your Money : " << model->player.getMoney() << endl;
+            break;
+
+        case 3:
+            cout << "HP Drinks" << endl;
+            for (int i = 0; i < HP.size(); i++)
+            {
+                cout << i + 1 << "- " << HP[i].getName() << " (Price: " << HP[i].getPrice() << " , Power:" << HP[i].getPower() << ")" << endl;
+            }
+            cin >> command;
+            model->human.addHPItem(HP[command]);
+            model->player.setMoney(model->player.getMoney() - HP[command].getPrice());
+            cout << "The items you bought:" << endl
+                 << "- " << HP[command].getName()
+                 << " (Power: " << HP[command].getPower() << ", Price: " << HP[command].getPrice() << ")"
+                 << ". Your Money : " << model->player.getMoney() << endl;
+            break;
+        case 4:
+            cerr << "Invalid command!";
         }
     }
 };
@@ -663,12 +757,11 @@ public:
 int main()
 {
     Human zahra(50, 40, 10, 5, 4);
-    Weapon w1("w1", 5, 1);
-    Weapon w2("w2", 4, 1);
-    vector<Weapon> weapons = {w1, w2};
+    Weapon w1("w1", 5, 1, 10);
+    Weapon w2("w2", 4, 1, 10);
+    Weapon w3("w3", 10, 1, 10);
+    vector<Weapon> weapons = {w1, w2, w3};
     zahra.setWeapon(weapons);
-    Weapon w3("w3", 10, 1);
-    zahra.addWeapon(w3);
 
     Player zar("zar", 19, 'w', 1, 100);
     Model model1;
@@ -684,5 +777,18 @@ int main()
     // model->setEnemy(enemy);
     // model.setHuman(zahra);
     view view1(model, controller);
+    // view1.round();
+    StaminaPotion s1("s1", 10, 1, 5);
+    StaminaPotion s2("s2", 12, 1, 6);
+    StaminaPotion s3("s3", 14, 1, 7);
+    StaminaPotion s4("s4", 16, 1, 8);
+    HPDrink h1("h1", 10, 1, 5);
+    HPDrink h2("h2", 12, 1, 6);
+    HPDrink h3("h3", 14, 1, 7);
+    HPDrink h4("h4", 18, 1, 8);
+    vector<StaminaPotion> Stamina = {s1, s2, s3, s4};
+    vector<HPDrink> HP = {h1, h2, h3, h4};
+    Store store(Stamina, HP, weapons, model);
+    store.displayItems();
     view1.round();
 }
