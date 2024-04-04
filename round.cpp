@@ -199,6 +199,11 @@ public:
         return Name;
     }
 
+    void setName (string name)
+    {
+        Name = name;
+    }
+
     virtual void attack()
     {
     }
@@ -475,6 +480,7 @@ public:
             Zambie enemy(human.getStamina(), human.getHP(), human.getPower());
             Weapon w("fist", 5, 1, 0, 'p');
             enemy.addWeapon(w);
+            enemy.setName(EnemyType);
             model->setEnemy(enemy);
         }
     }
@@ -875,7 +881,7 @@ int main()
     Player zar("zar", 19, 'w', 1, 100);
     Model model1;
     Model *model = &model1;
-    Factory factory1(zahra, zar, model, "Human");
+    Factory factory1(zahra, zar, model, "Zambie");
     factory1.factory();
 
     // Character enemy = factory1.factory();
