@@ -537,6 +537,12 @@ public:
                 {
                     model->enemy.Weapons[index].addCount(-1);
                 }
+                if (!model->getHuman().isAlive())
+                {
+                    cout << "\n you are dead \n";
+                }
+
+
                 return true;
             }
         }
@@ -556,6 +562,7 @@ public:
                     cerr << "\n Low Enargy! \n Try Again. \n";
                     return false;
                 }
+               
 
                 else
                 {
@@ -571,6 +578,19 @@ public:
                 if (model->getHuman().Weapons[index].getModel() == 't')
                 {
                     model->human.Weapons[index].addCount(-1);
+                }
+                if (!model->getEnemy().isAlive())
+                {
+                    cout << "\nyour enemy died\n";
+                    int newStamina = model->getHuman().getStamina()+ 5;
+                    model->human.setStamina(newStamina);
+
+                    int newHp = model->getHuman().getHP()+ 10;
+                    model->human.setHP(newHp);
+
+                    int newmoney = model->getPlayer().getMoney()+100;
+                    model->player.setMoney(newmoney);
+                Factory factory1(model->human, model->player, model, "Zambie");
                 }
                 return true;
             }
