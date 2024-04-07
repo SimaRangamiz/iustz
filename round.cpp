@@ -68,12 +68,15 @@ class Weapon : public Item
 private:
     char Model;
     // 't' : throwable
+    char Type;
+    // 'c' : coldskill
 
 public:
     Weapon(string name, int power, int count, int price) : Item(name, power, count, price) {}
-    Weapon(string name, int power, int count, int price, char model) : Item(name, power, count, price)
+    Weapon(string name, int power, int count, int price, char model, char type) : Item(name, power, count, price)
     {
         Model = model;
+        Type = type;
     }
     Weapon() = default;
 
@@ -328,6 +331,7 @@ private:
     char Gender;
     int Level;
     int Money;
+    int Experience;
 
 public:
     Player(string name, int age, char gender, int level, int money)
@@ -336,6 +340,7 @@ public:
         Age = age;
         Gender = gender;
         Level = level;
+        Experience = level;
         Money = money;
     }
     Player() = default;
@@ -388,6 +393,16 @@ public:
     int getMoney()
     {
         return Money;
+    }
+
+    int getExperience ()
+    {
+        return Experience;
+    }
+
+    void setExperience (int experience)
+    {
+        Experience = experience;
     }
 
     virtual void attack()
@@ -478,7 +493,7 @@ public:
         else
         {
             Zambie enemy(human.getStamina(), human.getHP(), human.getPower());
-            Weapon w("fist", 5, 1, 0, 'p');
+            Weapon w("fist", 5, 1, 0, 'p', 'c');
             enemy.addWeapon(w);
             enemy.setName(EnemyType);
             model->setEnemy(enemy);
@@ -590,6 +605,10 @@ public:
 
                     int newmoney = model->getPlayer().getMoney()+100;
                     model->player.setMoney(newmoney);
+
+                    int newExperience = model->getPlayer().getLevel() + 1;
+                    model->player.setExperience(newExperience);
+
                 Factory factory1(model->human, model->player, model, "Zambie");
                 }
                 return true;
@@ -737,7 +756,8 @@ public:
              << "enemy Stamina: " << model->getEnemy().getStamina() << endl
              << "enemy HP: " << model->getEnemy().getHP() << endl
              << "1. Attack" << endl
-             << "2. Using items" << endl;
+             << "2. Using items" << endl
+             << "3. Level up" << endl;
         int YourHp = model->getHuman().getHP();
         int YourStamina = model->getHuman().getStamina();
         int EnemyStamina = model->getEnemy().getStamina();
@@ -881,6 +901,19 @@ public:
             round();
             break;
 
+        case 3:
+            if (model->getPlayer().getExperience() <= model->getPlayer().getLevel())
+            {
+                cerr << "Level up is not possible.";
+                round();
+            }
+            else 
+            {
+                model->player.setLevel(model->player.getExperience());
+                model->human.setPower(model->human.getPower()+5);
+                model->human.setColdskill(model->human.getColdskill());
+                model->human.setWarmskill(model->human.getWarmskill());
+            }
         default:
             cerr << "Incorrect command";
             round();
@@ -892,9 +925,9 @@ public:
 int main()
 {
     Human zahra(50, 40, 10, 5, 4);
-    Weapon w1("w1", 5, 1, 10, 't');
-    Weapon w2("w2", 4, 1, 10, 'p');
-    Weapon w3("w3", 10, 1, 10, 't');
+    Weapon w1("w1", 5, 1, 10, 't', 'c');
+    Weapon w2("w2", 4, 1, 10, 'p', 'w');
+    Weapon w3("w3", 10, 1, 10, 't', 'c');
     vector<Weapon> weapons = {w1, w2, w3};
     zahra.setWeapon(weapons);
 
