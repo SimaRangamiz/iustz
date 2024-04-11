@@ -91,6 +91,10 @@ public:
     {
         return Model;
     }
+    char getType()
+    {
+        return Type;
+    }
 };
 
 class StaminaPotion : public Item
@@ -761,38 +765,43 @@ public:
     void addWeaponByLevel(int playerLevel)
     {
 
-        int addWeaponCount;
-        if (playerLevel < 2)
+        // int addWeaponCount;
+        // if (playerLevel < 2)
+        // {
+        //     addWeaponCount = 3;
+        // }
+        // else
+        // {
+        //     addWeaponCount = floor(sqrt(playerLevel));
+        // }
+        // int totalWeaponCount = initialWeaponCount + addWeaponCount;
+
+        int power = 10 + floor(sqrt(playerLevel)) * 3;
+        int price = 10 + floor(sqrt(playerLevel)) * 2;
+        int count = 1;
+        srand(time(0));
+        
+        if (rand() % 10 == 4)
         {
-            addWeaponCount = 3;
+            Weapon newWeapon("weapon", power, count, 2 * price, 'p', char(99 + ((playerLevel % 2) * 14))); //// w 119
+            addToWeaponList(newWeapon);
         }
         else
         {
-            addWeaponCount = floor(sqrt(playerLevel));
+            Weapon newWeapon("Weapon", power, count, price, 't', char(99 + ((playerLevel % 2) * 14)));
+            addToWeaponList(newWeapon);
         }
-        // int totalWeaponCount = initialWeaponCount + addWeaponCount;
 
-        for (int i = 0; i < addWeaponCount; ++i)
-        {
-            if (i < 3)
-            {
-                int power = 10 + floor(sqrt(playerLevel)) * 3;
-                int price = 10 + floor(sqrt(playerLevel)) * 2;
-                int count = 1;
-                Weapon newWeapon("Weapon " + to_string(i + 1), power, count, price, 't',char(99 + (i * 14))) ;  //// w 119
-                addToWeaponList(newWeapon);
-                // weapon.push_back(newWeapon);
-            }
-        }
+        // weapon.push_back(newWeapon);
     }
 
     /////////////////////////////////////////////////////////////////////////////
 
     void store()
     {
-        addStaminaByLevel(model->player.getLevel());
-        addHPByLevel(model->player.getLevel());
-        addWeaponByLevel(model->player.getLevel());
+        // addStaminaByLevel(model->player.getLevel());
+        // addHPByLevel(model->player.getLevel());
+        // addWeaponByLevel(model->player.getLevel());
         // نمایش رندوم محتوای فروشگاه و اجرا بین بازی و فروشگاه
         // srand(time(0));
 
@@ -830,10 +839,29 @@ public:
             cout << "Weapon:\n";
             for (int i = 0; i < weapon.size(); i++)
             {
+                string type1;
+                if (weapon[i].getType() == 't')
+                {
+                    type1 = "Throwable";
+                }
+                else
+                {
+                    type1 = "Permanent";
+                }
+                string model1;
+                if (weapon[i].getType() == 'c')
+                {
+                    model1 = "ColdWeapon";
+                }
+                else
+                {
+                    model1 = "WarmWeapon";
+                }
                 cout << i + 1 << ". " << weapon[i].getName() << endl
                      << " -Price: " << weapon[i].getPrice() << endl
                      << " -Power: " << weapon[i].getPower() << endl
-                     << " -model : " << model->getHuman().getWeapon()[i].getModel() << endl;
+                     << " -model : " << model1 << endl
+                     << " -type : " << type1 << endl;
             }
             cin >> command;
             if (command > 0 && command <= weapon.size())
@@ -850,7 +878,7 @@ public:
                 }
                 else
                 {
-                    cout << "You don not have enough money to buy this item.\n";
+                    cout << "You do not have enough money to buy this item.\n";
                 }
             }
             else
@@ -1267,7 +1295,7 @@ int main()
     // zahra.setWeapon(weapons);
     Store store(Stamina, HP, weapons, model);
     store.addStaminaByLevel(playerLevel);
-    store.addWeaponByLevel(playerLevel);
+    store.addHPByLevel(playerLevel);
     store.addWeaponByLevel(playerLevel);
 
     // StaminaPotion s1("s1", 10, 1, 5);
