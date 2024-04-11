@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <cmath>
 using namespace std;
 
 //////////////////////////////////////////////////////////Item
@@ -722,13 +723,13 @@ public:
     {
         fruitage.push_back(item);
     }
-    
+
     // اضافه کردن اقلام قروشگاه براساس سطح بازیکن/////////////////////////////////////
 
     void addStaminaByLevel(int playerLevel)
     {
         int initialStaminaCount = 2;
-        int addStaminaCount = 4;
+        int addStaminaCount = playerLevel / 10;
         int totalStaminaCount = initialStaminaCount + addStaminaCount;
 
         for (int i = 0; i < totalStaminaCount; ++i)
@@ -759,24 +760,33 @@ public:
 
     void addWeaponByLevel(int playerLevel)
     {
-        int initialWeaponCount = 3;
-        int addWeaponCount = 2;
-        int totalWeaponCount = initialWeaponCount + addWeaponCount;
 
-        for (int i = 0; i < totalWeaponCount; ++i)
+        int addWeaponCount;
+        if (playerLevel < 2)
         {
-            int power = 10 + playerLevel * 3;
-            int price = 10 + playerLevel * 2;
-            int count = 1;
-            Weapon newWeapon("Weapon " + to_string(i + 1), power, count, price);
-            addToWeaponList(newWeapon);
-            //weapon.push_back(newWeapon);
+            addWeaponCount = 3;
+        }
+        else
+        {
+            addWeaponCount = floor(sqrt(playerLevel));
+        }
+        // int totalWeaponCount = initialWeaponCount + addWeaponCount;
+
+        for (int i = 0; i < addWeaponCount; ++i)
+        {
+            if (i < 3)
+            {
+                int power = 10 + floor(sqrt(playerLevel)) * 3;
+                int price = 10 + floor(sqrt(playerLevel)) * 2;
+                int count = 1;
+                Weapon newWeapon("Weapon " + to_string(i + 1), power, count, price, 't',char(99 + (i * 14))) ;  //// w 119
+                addToWeaponList(newWeapon);
+                // weapon.push_back(newWeapon);
+            }
         }
     }
 
-    
     /////////////////////////////////////////////////////////////////////////////
-
 
     void store()
     {
@@ -809,7 +819,7 @@ public:
         //     Factory round();
         // }
         ////////////////////////////////////////////////////////////////
-       
+
         cout << "\"WELCOME TO OUR STORE!\"\nWhich one do you want?\n1. Weapon\n2. First aid box(To increse Stamina)\n3. Edible(To increase Hp)\n4. Armor\n5. Fruitage(To increase Stamina and Hp)\n6. Exit."
              << endl;
         int command;
@@ -823,14 +833,14 @@ public:
                 cout << i + 1 << ". " << weapon[i].getName() << endl
                      << " -Price: " << weapon[i].getPrice() << endl
                      << " -Power: " << weapon[i].getPower() << endl
-                     << " - model : " << model->getHuman().getWeapon()[i].getModel() << endl;
+                     << " -model : " << model->getHuman().getWeapon()[i].getModel() << endl;
             }
             cin >> command;
             if (command > 0 && command <= weapon.size())
             {
                 if (model->player.getMoney() >= weapon[command - 1].getPrice())
                 {
-                    model->human.addWeapon(weapon[command - 1]);
+                    model->human.addWeapon(weapon[command - 1]); ///////////////////
                     model->player.setMoney(model->player.getMoney() - weapon[command - 1].getPrice());
                     cout << "The item you bought:" << endl
                          << "- " << weapon[command - 1].getName()
@@ -1228,11 +1238,10 @@ int main()
 {
 
     Human zahra(50, 40, 10, 5, 4);
-    Weapon w1("w1", 5, 1, 10, 't', 'c');
-    Weapon w2("w2", 4, 1, 10, 'p', 'w');
-    Weapon w3("w3", 10, 1, 10, 't', 'c');
-    vector<Weapon> weapons = {w1, w2, w3};
-    zahra.setWeapon(weapons);
+    // Weapon w1("w1", 5, 1, 10, 't', 'c');
+    // Weapon w2("w2", 4, 1, 10, 'p', 'w');
+    // Weapon w3("w3", 10, 1, 10, 't', 'c');
+    // vector<Weapon> weapons = {w1, w2, w3};
 
     Player zar("zar", 19, 'w', 1, 100);
     Model model1;
@@ -1250,27 +1259,28 @@ int main()
     view view1(model, controller);
     // view1.round();
 
-     int playerLevel = 1;
+    int playerLevel = 1;
+
+    vector<StaminaPotion> Stamina = {};
+    vector<HPDrink> HP = {};
+    vector<Weapon> weapons = {};
+    // zahra.setWeapon(weapons);
     Store store(Stamina, HP, weapons, model);
-    
     store.addStaminaByLevel(playerLevel);
     store.addWeaponByLevel(playerLevel);
     store.addWeaponByLevel(playerLevel);
 
-    
-    StaminaPotion s1("s1", 10, 1, 5);
-    StaminaPotion s2("s2", 12, 1, 6);
-    StaminaPotion s3("s3", 14, 1, 7);
-    StaminaPotion s4("s4", 16, 1, 8);
-    HPDrink h1("h1", 10, 1, 5);
-    HPDrink h2("h2", 12, 1, 6);
-    HPDrink h3("h3", 14, 1, 7);
-    HPDrink h4("h4", 18, 1, 8);
-    // Armor a1("a1", 10, 1, 10);
-    Fruitage f1("f1", 25, 10, 1, 20);
-    vector<StaminaPotion> Stamina = {s1, s2, s3, s4};
-    vector<HPDrink> HP = {h1, h2, h3, h4};
-    Store store(Stamina, HP, weapons, model);
+    // StaminaPotion s1("s1", 10, 1, 5);
+    // StaminaPotion s2("s2", 12, 1, 6);
+    // StaminaPotion s3("s3", 14, 1, 7);
+    // StaminaPotion s4("s4", 16, 1, 8);
+    // HPDrink h1("h1", 10, 1, 5);
+    // HPDrink h2("h2", 12, 1, 6);
+    // HPDrink h3("h3", 14, 1, 7);
+    // HPDrink h4("h4", 18, 1, 8);
+    // // Armor a1("a1", 10, 1, 10);
+    // Fruitage f1("f1", 25, 10, 1, 20);
+
     int i = 0;
     while (model->getHuman().isAlive())
     {
