@@ -554,7 +554,8 @@ public:
                 }
                 if (!model->getHuman().isAlive())
                 {
-                    cout << "\n you are dead \n";
+                    cout << "\nGame Over! :(\n";
+                    exit(0);
                 }
 
 
@@ -596,20 +597,21 @@ public:
                 }
                 if (!model->getEnemy().isAlive())
                 {
-                    cout << "\nyour enemy died\n";
+                    cout << "\nThe enemy was defeated!\n";
                     int newStamina = model->getHuman().getStamina()+ 5;
                     model->human.setStamina(newStamina);
 
                     int newHp = model->getHuman().getHP()+ 10;
                     model->human.setHP(newHp);
 
-                    int newmoney = model->getPlayer().getMoney()+100;
+                    int newmoney = model->getPlayer().getMoney()+20;
                     model->player.setMoney(newmoney);
 
                     int newExperience = model->getPlayer().getLevel() + 1;
                     model->player.setExperience(newExperience);
 
                 Factory factory1(model->human, model->player, model, "Zambie");
+                factory1.factory();
                 }
                 return true;
             }
@@ -750,14 +752,18 @@ public:
 
     void round()
     {
-        cout << "status: " << endl
+        cout << "\nSTART OF WAR!" << endl
+             << "status: " << endl
              << "Stamina: " << model->getHuman().getStamina() << endl
              << "HP: " << model->getHuman().getHP() << endl
              << "enemy Stamina: " << model->getEnemy().getStamina() << endl
              << "enemy HP: " << model->getEnemy().getHP() << endl
              << "1. Attack" << endl
+
              << "2. Using items" << endl
-             << "3. Level up" << endl;
+             << "3. Level up" << endl
+             << "4. Exit" << endl
+             << "(Attak ends your turn)" << endl;
         int YourHp = model->getHuman().getHP();
         int YourStamina = model->getHuman().getStamina();
         int EnemyStamina = model->getEnemy().getStamina();
@@ -805,7 +811,7 @@ public:
                     // enemy
                     if (controller.Attack('A', 0))
                     {
-                        cout << model->enemy.getName() << "Attacked!" << endl
+                        cout << endl << model->enemy.getName() << " Attacked!" << endl
                              << "-Enemy: " << endl
                              << " Stamina: " << model->getEnemy().getStamina() << endl
                              << " HP: " << model->getEnemy().getHP() << " (" << EnemyHP << ")" << endl
