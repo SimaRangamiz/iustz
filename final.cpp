@@ -1441,6 +1441,15 @@ public:
                 store->addHPByLevel(level);
                 store->addStaminaByLevel(level);
                 store->addWeaponByLevel(level);
+                srand(time(NULL));
+                int j = rand() % store->getWeapons().size();
+                model->human.addWeapon(store->getWeapons()[j]);
+                j = rand() % store->getFruitage().size();
+                model->human.addFruitageItem(store->getFruitage()[j]);
+                j = rand() % store->getHP().size();
+                model->human.addHPItem(store->getHP()[j]);
+                j = rand() % store->getStamina().size();
+                model->human.addStaminaItem(store->getStamina()[j]);
             }
             break;
         case 4:
