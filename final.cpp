@@ -951,9 +951,9 @@ public:
         if (EnemyType == "Zambie")
         {
             srand(time(NULL));
-            double a1 = 0.7 + (rand() % 100) / 100;
-            double a2 = 0.7 + (rand() % 100) / 100;
-            double a3 = 0.7 + (rand() % 100) / 100;
+            double a1 = 0.7 + double(rand() % 100) / 100;
+            double a2 = 0.7 + double(rand() % 100) / 100;
+            double a3 = 0.7 + double(rand() % 100) / 100;
             Weapon w("fist", 5, 1, 0, 'p', 'c');
             Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int(a3 * human.getPower()), 0, 0);
 
@@ -963,11 +963,11 @@ public:
         else
         {
             srand(time(NULL));
-            double a1 = 0.7 + (rand() % 100) / 100;
-            double a2 = 0.7 + (rand() % 100) / 100;
-            double a3 = 0.7 + (rand() % 100) / 100;
-            double a4 = 0.7 + (rand() % 100) / 100;
-            double a5 = 0.7 + (rand() % 100) / 100;
+            double a1 = 0.7 + double(rand() % 100) / 100;
+            double a2 = 0.7 + double(rand() % 100) / 100;
+            double a3 = 0.7 + double(rand() % 100) / 100;
+            double a4 = 0.7 + double(rand() % 100) / 100;
+            double a5 = 0.7 + double(rand() % 100) / 100;
             int a6 = rand() % 7 - 2;
             vector<Weapon> w = {};
             for (int i = 0; i < human.getWeapon().size() + a6; i++)
@@ -997,8 +997,8 @@ public:
                 fr.push_back(store.getFruitage()[j]);
             }
             Human enemy(a1 * human.getStamina(), a2 * human.getHP(), a3 * human.getPower(), w, sp, hp, fr, a4 * human.getWarmskill(), a5 * human.getColdskill());
-            model->setEnemy(enemy);
             enemy.setName(EnemyType);
+            model->setEnemy(enemy);
         }
     }
 };
@@ -1455,6 +1455,7 @@ public:
 
 int main()
 {
+    
     string name;
     cout << "Enter your name" << endl;
     cin >> name;
@@ -1487,8 +1488,8 @@ int main()
     cout << "Enter money" << endl;
     cin >> money;
 
-    Human zahra(stamina, hp, power, power/2, power/2);
-    Player zar(name, age, gender, level, money);
+    Human human(stamina, hp, power, power/2, power/2);
+    Player player(name, age, gender, level, money);
     Model model1;
     Model *model = &model1;
 
@@ -1499,7 +1500,7 @@ int main()
     Weapon Knife("Knife ", 10, 2, 8, 'p', 'c');
     Weapon Bomb("Bomb ", 20, 1, 15, 't', 'w');
     vector<Weapon> weaponsToAdd{Knife, Bomb};
-    zahra.setWeapon(weaponsToAdd);
+    human.setWeapon(weaponsToAdd);
     vector<Fruitage> fruitage = {};
 
     Store store(Stamina, HP, weaponsToAdd, model);
@@ -1507,7 +1508,7 @@ int main()
     store.addHPByLevel(playerLevel);
     store.addWeaponByLevel(playerLevel);
 
-    Factory factory1(zahra, zar, model, "Zambie", store);
+    Factory factory1(human, player, model, "Zambie", store);
     factory1.factory();
     Controller controller(model, &store);
     view view1(model, controller, &store);
