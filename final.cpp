@@ -406,7 +406,7 @@ public:
         HP += Fruitageitems[i].getCapability();
     }
 
-    int damagePower(int i, Human enemy)
+    int damagePower(int i, Human &enemy)
     {
         int result;
         if (Weapons[i].getModel() == 'c')
@@ -956,7 +956,7 @@ public:
             double a3 = 0.7 + (rand() % 100) / 100;
             Weapon w("fist", 5, 1, 0, 'p', 'c');
             Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int(a3 * human.getPower()), 0, 0);
-
+            enemy.addWeapon(w);
             enemy.setName(EnemyType);
             model->setEnemy(enemy);
         }
@@ -1049,7 +1049,7 @@ public:
 
                 // attakerPower "+" weaponPower
 
-                model->human.setStamina(model->getEnemy().damagePower(index, model->enemy));
+                model->human.setStamina(model->human.getStamina() - model->getEnemy().damagePower(index, model->human));
 
                 if (model->getEnemy().Weapons[index].getModel() == 't')
                 {
@@ -1088,7 +1088,7 @@ public:
                 }
 
                 // weapon.power + human.warm/cold Skill
-                model->enemy.setStamina(model->getHuman().damagePower(index, model->enemy));
+                model->enemy.setStamina(model->enemy.getStamina() - model->getHuman().damagePower(index, model->enemy));
 
                 if (model->getHuman().Weapons[index].getModel() == 't')
                 {
@@ -1107,10 +1107,11 @@ public:
                     int newmoney = model->getPlayer().getMoney() + 100;
                     model->player.setMoney(newmoney);
 
-                    int newExperience = model->getPlayer().getLevel() + 1;
+                    int newExperience = model->getPlayer().getLevel() + 5;
                     model->player.setExperience(newExperience);
 
                     Factory factory1(model->human, model->player, model, "Zambie", *store);
+                    factory1.factory();
                 }
                 return true;
             }
@@ -1125,8 +1126,8 @@ public:
             {
                 if (Attack('A', i))
                 {
-            int HP = model->getEnemy().getHP();
-            int Hstamina = model->getHuman().getStamina();
+                    int HP = model->getEnemy().getHP();
+                    int Hstamina = model->getHuman().getStamina();
 
                     cout << model->enemy.getName() << " Attacked!" << endl
                          << "-Enemy: " << endl
@@ -1139,6 +1140,7 @@ public:
                     return;
                 }
             }
+            cout << "The enemy surrendered!" << endl;
             return;
         }
         else
@@ -1456,7 +1458,7 @@ public:
 int main()
 {
 
-    Human zahra(50, 40, 10, 5, 4);
+    Human zahra(50, 40, 10, 10, 10);
     //  Weapon Knife("w1", 5, 1, 10, 't', 'c');
 
     // Weapon w2("w2", 4, 1, 10, 'p', 'w');
