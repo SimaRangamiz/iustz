@@ -399,12 +399,18 @@ public:
         Stamina += Staminaitems[i].getPower();
     }
 
-    int damagePower (int i, Human enemy)
+    void useFruitage(int i)
+    {
+        Stamina += Fruitageitems[i].getPower();
+        HP += Fruitageitems[i].getCapability();
+    }
+
+    int damagePower(int i, Human enemy)
     {
         int result;
-        if (Weapons[i].getModel()=='c')
+        if (Weapons[i].getModel() == 'c')
             result = Weapons[i].getPower() + Coldskill;
-        else 
+        else
             result = Weapons[i].getPower() + Warmskill;
         if (enemy.isArmor)
             result /= 2;
@@ -581,16 +587,15 @@ public:
         model->setPlayer(player);
     }
 
-    
     void factory()
     {
         if (EnemyType == "Zambie")
         {
-            srand (time(0));
+            srand(time(0));
             int a1 = 0.7 + (rand() % 100) / 100;
             int a2 = 0.7 + (rand() % 100) / 100;
             int a3 = 0.7 + (rand() % 100) / 100;
-            Human enemy(a1*human.getStamina(), a2*human.getHP(), a3*human.getPower(), 0, 0);
+            Human enemy(a1 * human.getStamina(), a2 * human.getHP(), a3 * human.getPower(), 0, 0);
             Weapon w("fist", 5, 1, 0, 'p', 'c');
             enemy.addWeapon(w);
             enemy.setName(EnemyType);
@@ -598,7 +603,7 @@ public:
         }
         else
         {
-            srand (time(0));
+            srand(time(0));
             int a1 = 0.7 + (rand() % 100) / 100;
             int a2 = 0.7 + (rand() % 100) / 100;
             int a3 = 0.7 + (rand() % 100) / 100;
@@ -606,33 +611,33 @@ public:
             int a5 = 0.7 + (rand() % 100) / 100;
             int a6 = rand() % 7 - 2;
             vector<Weapon> w = {};
-            for (int i=0; i<human.getWeapon().size() + a6; i++)
+            for (int i = 0; i < human.getWeapon().size() + a6; i++)
             {
                 int j = rand() % store.getWeapons().size();
                 w.push_back(store.getWeapons()[j]);
             }
             a6 = rand() % 7 - 2;
             vector<StaminaPotion> sp = {};
-            for (int i=0; i<human.getStaminaItems().size() + a6; i++)
+            for (int i = 0; i < human.getStaminaItems().size() + a6; i++)
             {
                 int j = rand() % store.getStamina().size();
                 sp.push_back(store.getStamina()[j]);
             }
             a6 = rand() % 7 - 2;
             vector<HPDrink> hp = {};
-            for (int i=0; i<human.getHPItems().size() + a6; i++)
+            for (int i = 0; i < human.getHPItems().size() + a6; i++)
             {
                 int j = rand() % store.getHP().size();
                 hp.push_back(store.getHP()[j]);
             }
             a6 = rand() % 7 - 2;
             vector<Fruitage> fr = {};
-            for (int i=0; i<human.getFruitageItems().size() + a6 + 1; i++)
+            for (int i = 0; i < human.getFruitageItems().size() + a6 + 1; i++)
             {
                 int j = rand() % store.getFruitage().size();
                 fr.push_back(store.getFruitage()[j]);
             }
-            Human enemy(a1*human.getStamina(), a2*human.getHP(), a3*human.getPower(), w,sp, hp ,fr, a4*human.getWarmskill(), a5*human.getColdskill());
+            Human enemy(a1 * human.getStamina(), a2 * human.getHP(), a3 * human.getPower(), w, sp, hp, fr, a4 * human.getWarmskill(), a5 * human.getColdskill());
             model->setEnemy(enemy);
         }
     }
@@ -684,7 +689,7 @@ public:
 
                 // attakerPower "+" weaponPower
 
-                model->human.setStamina(model->getEnemy().damagePower(index , model->enemy));
+                model->human.setStamina(model->getEnemy().damagePower(index, model->enemy));
 
                 if (model->getEnemy().Weapons[index].getModel() == 't')
                 {
@@ -767,31 +772,38 @@ public:
         }
         else
         {
-
+            int Hstamina = model->getHuman().getStamina();
+            int fruitSize = model->getEnemy().getFruitageItems().size();
             int staminaSize = model->getEnemy().getStaminaItems().size();
             int Stamina = model->getEnemy().getStamina();
-            if (staminaSize > 0)
+            int HPsize = model->getEnemy().getHPItems().size();
+            int HP = model->getEnemy().getHP();
+            if (staminaSize > 0 || fruitSize > 0)
             {
                 bool healthy = 1;
                 for (int i = 0; i < model->getHuman().getWeapon().size(); i++)
                 {
-                    if (model->getHuman().damagePower(i , model->human) > Stamina)
+                    if (model->getHuman().damagePower(i, model->human) > Stamina)
                     {
                         healthy = 0;
                     }
                 }
                 if (!healthy)
                 {
-                    model->getEnemy().useStamina(0);
+                    if (!model->getEnemy().getStaminaItems().empty())
+                        model->getEnemy().useStamina(0);
+                    else
+                    {
+                        model->getEnemy().useFruitage(0);
+                        cout << model->getEnemy().getName() << " used HP drink!" << endl
+                             << "new HP: " << model->getEnemy().getHP() << "(" << HP << ")" << endl;
+                    }
                     cout << model->getEnemy().getName() << " used Stamina potion!" << endl
-                         << "new Stamina: " << model->getEnemy().getStamina() << "(" << Stamina << ")";
+                         << "new Stamina: " << model->getEnemy().getStamina() << "(" << Stamina << ")" << endl;
                     enemyAttack();
                 }
             }
-
-            int HPsize = model->getEnemy().getHPItems().size();
-            int HP = model->getEnemy().getHP();
-            if (HPsize > 0)
+            if (HPsize > 0 || fruitSize > 0)
             {
                 bool attack = 1;
                 for (int i = 0; i < model->getEnemy().getWeapon().size(); i++)
@@ -803,14 +815,37 @@ public:
                 }
                 if (!attack)
                 {
-                    model->getEnemy().useHP(0);
+                    if (!model->getEnemy().getHPItems().empty())
+                        model->getEnemy().useHP(0);
+                    else
+                    {
+                        model->getEnemy().useFruitage(0);
+                        cout << model->getEnemy().getName() << " used Stamina potion!" << endl
+                             << "new Stamina: " << model->getEnemy().getStamina() << "(" << Stamina << ")" << endl;
+                    }
                     cout << model->getEnemy().getName() << " used HP drink!" << endl
-                         << "new HP: " << model->getEnemy().getHP() << "(" << HP << ")";
+                         << "new HP: " << model->getEnemy().getHP() << "(" << HP << ")" << endl;
                     enemyAttack();
                 }
             }
 
-            
+            for (int i = 0; i < model->getEnemy().getWeapon().size(); i++)
+            {
+                if (Attack('A', i))
+                {
+                        cout << model->enemy.getName() << " Attacked!" << endl
+                             << "-Enemy: " << endl
+                             << " Stamina: " << model->getEnemy().getStamina() << endl
+                             << " HP: " << model->getEnemy().getHP() << " (" << HP << ")" << endl
+                             << "-You: " << endl
+                             << " Stamina: " << model->getHuman().getStamina() << " (" << Hstamina << ")" << endl
+                             << " HP: " << model->getHuman().getHP() << endl
+                             << endl;
+                    return;
+                }
+            }
+            cout << "The enemy surrendered!" << endl;
+            return;
         }
     }
 };
@@ -831,7 +866,7 @@ public:
         HP = hp;
         weapon = weapon1;
         model = model1;
-    //////          Basic shop items             //////
+        //////          Basic shop items             //////
 
         Weapon Knife("Knife ", 10, 2, 8, 'p', 'c');
         Weapon Bomb("Bomb ", 20, 1, 15, 't', 'w');
@@ -853,7 +888,7 @@ public:
         vector<Fruitage> FruitageToAdd{OrangeJuice, Pumpkin};
         addToFruitageList(FruitageToAdd);
     }
-    Store () = default;
+    Store() = default;
     //////               ///////                      //////
 
     ///// Shop items based on player level(crafted items) /////
@@ -938,7 +973,7 @@ public:
     {
         return HP;
     }
-    vector<Fruitage> getFruitage ()
+    vector<Fruitage> getFruitage()
     {
         return fruitage;
     }
@@ -991,7 +1026,6 @@ public:
         }
     }
     //////               ///////                      //////
-
 
     /////////////////////////////////////////////////////////////////////////////
 
@@ -1222,17 +1256,7 @@ public:
                     }
 
                     // enemy
-                    if (controller.Attack('A', 0))
-                    {
-                        cout << model->enemy.getName() << "Attacked!" << endl
-                             << "-Enemy: " << endl
-                             << " Stamina: " << model->getEnemy().getStamina() << endl
-                             << " HP: " << model->getEnemy().getHP() << " (" << EnemyHP << ")" << endl
-                             << "-You: " << endl
-                             << " Stamina: " << model->getHuman().getStamina() << " (" << YourStamina << ")" << endl
-                             << " HP: " << model->getHuman().getHP() << endl
-                             << endl;
-                    }
+                    controller.enemyAttack();
                 }
             }
 
@@ -1315,7 +1339,6 @@ public:
                     }
                 }
 
-
             case 23:
 
                 // if Fruitage was chosen:
@@ -1382,7 +1405,7 @@ int main()
     // controller.Attack('A', 0);
     // model->setEnemy(enemy);
     // model.setHuman(zahra);
-    
+
     // view1.round();
 
     int playerLevel = 1;
