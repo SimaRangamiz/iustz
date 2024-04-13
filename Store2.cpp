@@ -564,6 +564,352 @@ public:
     friend class Store;
 };
 
+class Store
+{
+private:
+    vector<StaminaPotion> Stamina;
+    vector<HPDrink> HP;
+    vector<Weapon> weapon;
+    vector<Fruitage> fruitage;
+    Model *model;
+
+public:
+    Store(vector<StaminaPotion> stamina, vector<HPDrink> hp, vector<Weapon> weapon1, Model *model1)
+    {
+        Stamina = stamina;
+        HP = hp;
+        weapon = weapon1;
+        model = model1;
+        //////          Basic shop items             //////
+
+        Weapon Knife("Knife ", 10, 2, 8, 'p', 'c');
+        Weapon Bomb("Bomb ", 20, 1, 15, 't', 'w');
+        vector<Weapon> weaponsToAdd{Knife, Bomb};
+        addToWeaponList(weaponsToAdd);
+
+        StaminaPotion Patch("Patch ", 8, 1, 5);
+        StaminaPotion Splint("Splint ", 10, 1, 8);
+        vector<StaminaPotion> StaminaToAdd{Patch, Splint};
+        addToStaminaList(StaminaToAdd);
+
+        HPDrink Milk("Milk ", 8, 1, 8);
+        HPDrink Spaghetti("Spaghetti ", 10, 1, 9);
+        vector<HPDrink> HPToAdd{Milk, Spaghetti};
+        addToHPList(HPToAdd);
+
+        Fruitage OrangeJuice("Orange Juice", 15, 12, 1, 18);
+        Fruitage Pumpkin("Pumpkin", 12, 10, 1, 15);
+        vector<Fruitage> FruitageToAdd{OrangeJuice, Pumpkin};
+        addToFruitageList(FruitageToAdd);
+    }
+    Store() = default;
+    //////               ///////                      //////
+
+    ///// Shop items based on player level(crafted items) /////
+
+    void addStaminaByLevel(int playerLevel)
+    {
+        int power = 10 + floor(sqrt(playerLevel)) * 2;
+        int price = 10 + floor(sqrt(playerLevel)) * 1;
+        int count = 1;
+        srand(time(NULL));
+        vector<string> staminaNames = {"Bandage", "Elixir", "Painkiller", "Drug", "Quickening", "Blood", "Boosting Ampoule", "Health Elixir"};
+        int randomIndex = rand() % staminaNames.size();
+        string randomName = staminaNames[randomIndex];
+
+        StaminaPotion newStamina(randomName, power, count, price);
+        addToStaminaList(newStamina);
+    }
+
+    void addHPByLevel(int playerLevel)
+    {
+        int power = 10 + floor(sqrt(playerLevel)) * 3;
+        int price = 10 + floor(sqrt(playerLevel)) * 1;
+        int count = 1;
+
+        vector<string> hpNames = {"Pizza", "Cracker", "Kebab", "Smoothie", "Chocolate", "Coffee", "Dough", "Nuts"};
+        int randomIndex = rand() % hpNames.size();
+        string randomName = hpNames[randomIndex];
+
+        HPDrink newHp(randomName, power, count, price);
+        addToHPList(newHp);
+    }
+
+    void addWeaponByLevel(int playerLevel)
+    {
+        int power = 10 + floor(sqrt(playerLevel)) * 3;
+        int price = 10 + floor(sqrt(playerLevel)) * 2;
+        int count = 1;
+        srand(time(NULL));
+        vector<string> weaponNames = {"Sword", "Handgun", "Axe", "Hammer", "Shotgun", "Pistol", "Bow", "Shovel"};
+        int randomIndex = rand() % weaponNames.size();
+        string randomName = weaponNames[randomIndex];
+
+        if (rand() % 10 == 4)
+        {
+            Weapon newWeapon(randomName, power, count, 2 * price, 'p', char(99 + ((playerLevel % 2) * 14)));
+            addToWeaponList(newWeapon);
+        }
+        else
+        {
+            Weapon newWeapon(randomName, power, count, price, 't', char(199 + ((playerLevel % 2) * 14)));
+            addToWeaponList(newWeapon);
+        }
+    }
+
+    void addFruitageByLevel(int playerLevel)
+    {
+        if (playerLevel > 7)
+        {
+            srand(time(NULL));
+            int power = 10 + floor(sqrt(playerLevel)) * (rand() % 3);
+            int capability = 10 + floor(sqrt(playerLevel)) * (rand() % 3);
+            int price = 10 + floor(sqrt(playerLevel)) * 1;
+            int count = 1;
+
+            vector<string> fruitNames = {"Broccoli", "Pineapple", "Turnip", "Spinach", "Carrot", "Melon", "Lettuce", "Apple"};
+            int randomIndex = rand() % fruitNames.size();
+            string randomName = fruitNames[randomIndex];
+
+            Fruitage newFruitage(randomName, power, capability, count, price);
+            addToFruitageList(newFruitage);
+        }
+    }
+    /////                  //////                     //////
+
+    vector<Weapon> getWeapons()
+    {
+        return weapon;
+    }
+    vector<StaminaPotion> getStamina()
+    {
+        return Stamina;
+    }
+    vector<HPDrink> getHP()
+    {
+        return HP;
+    }
+    vector<Fruitage> getFruitage()
+    {
+        return fruitage;
+    }
+    /////  Add basic and crafted items to the store   //////
+    void addToWeaponList(Weapon item)
+    {
+        weapon.push_back(item);
+    }
+    void addToWeaponList(const vector<Weapon> &items)
+    {
+        for (const auto &item : items)
+        {
+            weapon.push_back(item);
+        }
+    }
+
+    void addToStaminaList(StaminaPotion item)
+    {
+        Stamina.push_back(item);
+    }
+
+    void addToStaminaList(const vector<StaminaPotion> &items)
+    {
+        for (const auto &item : items)
+        {
+            Stamina.push_back(item);
+        }
+    }
+
+    void addToHPList(HPDrink item)
+    {
+        HP.push_back(item);
+    }
+    void addToHPList(const vector<HPDrink> &items)
+    {
+        for (const auto &item : items)
+        {
+            HP.push_back(item);
+        }
+    }
+    void addToFruitageList(Fruitage item)
+    {
+        fruitage.push_back(item);
+    }
+    void addToFruitageList(const vector<Fruitage> &items)
+    {
+        for (const auto &item : items)
+        {
+            fruitage.push_back(item);
+        }
+    }
+    //////               ///////                      //////
+
+    /////////////////////////////////////////////////////////////////////////////
+
+    void store()
+    {
+        cout << "\"WELCOME TO OUR STORE!\"\nWhich one do you want?\n1. Weapon\n2. First aid box(To increse Stamina)\n3. Edible(To increase Hp)\n4. Fruitage(To increase Stamina and Hp)\n5. Exit."
+             << endl;
+        int command;
+        cin >> command;
+        switch (command)
+        {
+        case 1:
+            cout << "Weapon:\n";
+            for (int i = 0; i < weapon.size(); i++)
+            {
+                string type1;
+                if (weapon[i].getType() == 't')
+                {
+                    type1 = "Throwable";
+                }
+                else
+                {
+                    type1 = "Permanent";
+                }
+                string model1;
+                if (weapon[i].getType() == 'c')
+                {
+                    model1 = "ColdWeapon";
+                }
+                else
+                {
+                    model1 = "WarmWeapon";
+                }
+                cout << i + 1 << ". " << weapon[i].getName() << endl
+                     << " -Price: " << weapon[i].getPrice() << endl
+                     << " -Power: " << weapon[i].getPower() << endl
+                     << " -model : " << model1 << endl
+                     << " -type : " << type1 << endl;
+            }
+            cin >> command;
+            if (command > 0 && command <= weapon.size())
+            {
+                if (model->player.getMoney() >= weapon[command - 1].getPrice())
+                {
+                    model->human.addWeapon(weapon[command - 1]); ///////////////////
+                    model->player.setMoney(model->player.getMoney() - weapon[command - 1].getPrice());
+                    cout << "The item you bought:" << endl
+                         << "- " << weapon[command - 1].getName()
+                         << " (Power: " << weapon[command - 1].getPower() << ", Price: " << weapon[command - 1].getPrice() << ")\n"
+                         << "\n Your Balance : " << model->player.getMoney() << endl
+                         << endl;
+                }
+                else
+                {
+                    cout << "You do not have enough money to buy this item.\n";
+                }
+            }
+            else
+            {
+                cerr << "Invalid Number!";
+            }
+            break;
+
+        case 2:
+            cout << "First aid box :\n"
+                 << endl;
+            for (int i = 0; i < Stamina.size(); i++)
+            {
+                cout << i + 1 << "- " << Stamina[i].getName() <<endl
+                     << "- Price: " << Stamina[i].getPrice() << endl 
+                     << "- Power:" << Stamina[i].getPower() << endl;
+            }
+            cin >> command;
+            if (command > 0 && command <= Stamina.size())
+            {
+                if (model->player.getMoney() >= Stamina[command - 1].getPrice())
+                {
+                    model->human.addStaminaItem(Stamina[command - 1]);
+                    model->player.setMoney(model->player.getMoney() - Stamina[command - 1].getPrice());
+                    cout << "The items you bought:" << endl
+                         << "- " << Stamina[command - 1].getName()
+                         << " (Power: " << Stamina[command - 1].getPower() << ", Price: " << Stamina[command - 1].getPrice() << ")"
+                         << "\n Your Balance : " << model->player.getMoney()
+                         << endl;
+                }
+                else
+                {
+                    cout << "You don not have enough money to buy this item.\n";
+                }
+            }
+            else
+            {
+                cerr << "Invalid Number!";
+            }
+            break;
+
+        case 3:
+            cout << "Edible :" << endl;
+            for (int i = 0; i < HP.size(); i++)
+            {
+                cout << i + 1 << "- " << HP[i].getName() << endl
+                     << "- Price: " << HP[i].getPrice() << endl 
+                     << "- Power: " << HP[i].getPower() << endl;
+            }
+            cin >> command;
+            if (command > 0 && command <= HP.size())
+            {
+                if (model->player.getMoney() >= HP[command - 1].getPrice())
+                {
+                    model->human.addHPItem(HP[command - 1]);
+                    model->player.setMoney(model->player.getMoney() - HP[command - 1].getPrice());
+                    cout << "The items you bought:" << endl
+                         << "- " << HP[command - 1].getName()
+                         << " (Power: " << HP[command - 1].getPower() << ", Price: " << HP[command - 1].getPrice() << ")"
+                         << "\n Your Balance : " << model->player.getMoney() << endl;
+                }
+                else
+                {
+                    cout << "You don not have enough money to buy this item.\n";
+                }
+            }
+            else
+            {
+                cerr << "Invalid Number!";
+            }
+            break;
+        case 4:
+            cout << "Fruitage : \n";
+            for (int i = 0; i < fruitage.size(); i++)
+            {
+                cout << i + 1 << ". " << fruitage[i].getName() << endl
+                << "- Price: " << fruitage[i].getPrice() << endl
+                << "- Power:" << fruitage[i].getPower() << endl;
+            }
+            cin >> command;
+            if (command > 0 && command <= fruitage.size())
+            {
+                if (model->player.getMoney() >= fruitage[command - 1].getPrice())
+                {
+
+                    model->human.addFruitageItem(fruitage[command - 1]);
+                    model->player.setMoney(model->player.getMoney() - fruitage[command - 1].getPrice());
+                    cout << "The items you bought:" << endl
+                         << "- " << fruitage[command - 1].getName()
+                         << " (Power: " << fruitage[command - 1].getPower() << ", Price: " << fruitage[command - 1].getPrice() << ")"
+                         << "\n Your Balance : " << model->player.getMoney() << endl;
+                }
+                else
+                {
+                    cout << "You don't have enough money to buy this item.\n";
+                }
+            }
+            else
+            {
+                cerr << "Invalid Number!";
+            }
+            break;
+
+        case 5:
+            return;
+
+        default:
+            cerr << "Invalid command!\n";
+            break;
+        }
+    }
+};
+
 class Factory
 {
 private:
@@ -591,10 +937,10 @@ public:
     {
         if (EnemyType == "Zambie")
         {
-            srand(time(0));
-            int a1 = 0.7 + (rand() % 100) / 100;
-            int a2 = 0.7 + (rand() % 100) / 100;
-            int a3 = 0.7 + (rand() % 100) / 100;
+            srand(time(NULL));
+            double a1 = 0.7 + (rand() % 100) / 100;
+            double a2 = 0.7 + (rand() % 100) / 100;
+            double a3 = 0.7 + (rand() % 100) / 100;
             Human enemy(a1 * human.getStamina(), a2 * human.getHP(), a3 * human.getPower(), 0, 0);
             Weapon w("fist", 5, 1, 0, 'p', 'c');
             enemy.addWeapon(w);
@@ -603,12 +949,12 @@ public:
         }
         else
         {
-            srand(time(0));
-            int a1 = 0.7 + (rand() % 100) / 100;
-            int a2 = 0.7 + (rand() % 100) / 100;
-            int a3 = 0.7 + (rand() % 100) / 100;
-            int a4 = 0.7 + (rand() % 100) / 100;
-            int a5 = 0.7 + (rand() % 100) / 100;
+            srand(time(NULL));
+            double a1 = 0.7 + (rand() % 100) / 100;
+            double a2 = 0.7 + (rand() % 100) / 100;
+            double a3 = 0.7 + (rand() % 100) / 100;
+            double a4 = 0.7 + (rand() % 100) / 100;
+            double a5 = 0.7 + (rand() % 100) / 100;
             int a6 = rand() % 7 - 2;
             vector<Weapon> w = {};
             for (int i = 0; i < human.getWeapon().size() + a6; i++)
@@ -833,357 +1179,19 @@ public:
             {
                 if (Attack('A', i))
                 {
-                        cout << model->enemy.getName() << " Attacked!" << endl
-                             << "-Enemy: " << endl
-                             << " Stamina: " << model->getEnemy().getStamina() << endl
-                             << " HP: " << model->getEnemy().getHP() << " (" << HP << ")" << endl
-                             << "-You: " << endl
-                             << " Stamina: " << model->getHuman().getStamina() << " (" << Hstamina << ")" << endl
-                             << " HP: " << model->getHuman().getHP() << endl
-                             << endl;
+                    cout << model->enemy.getName() << " Attacked!" << endl
+                         << "-Enemy: " << endl
+                         << " Stamina: " << model->getEnemy().getStamina() << endl
+                         << " HP: " << model->getEnemy().getHP() << " (" << HP << ")" << endl
+                         << "-You: " << endl
+                         << " Stamina: " << model->getHuman().getStamina() << " (" << Hstamina << ")" << endl
+                         << " HP: " << model->getHuman().getHP() << endl
+                         << endl;
                     return;
                 }
             }
             cout << "The enemy surrendered!" << endl;
             return;
-        }
-    }
-};
-
-class Store
-{
-private:
-    vector<StaminaPotion> Stamina;
-    vector<HPDrink> HP;
-    vector<Weapon> weapon;
-    vector<Fruitage> fruitage;
-    Model *model;
-
-public:
-    Store(vector<StaminaPotion> stamina, vector<HPDrink> hp, vector<Weapon> weapon1, Model *model1)
-    {
-        Stamina = stamina;
-        HP = hp;
-        weapon = weapon1;
-        model = model1;
-        //////          Basic shop items             //////
-
-        Weapon Knife("Knife ", 10, 2, 8, 'p', 'c');
-        Weapon Bomb("Bomb ", 20, 1, 15, 't', 'w');
-        vector<Weapon> weaponsToAdd{Knife, Bomb};
-        addToWeaponList(weaponsToAdd);
-
-        StaminaPotion Patch("Patch ", 8, 1, 5);
-        StaminaPotion Splint("Splint ", 10, 1, 8);
-        vector<StaminaPotion> StaminaToAdd{Patch, Splint};
-        addToStaminaList(StaminaToAdd);
-
-        HPDrink Milk("Milk ", 8, 1, 8);
-        HPDrink Spaghetti("Spaghetti ", 10, 1, 9);
-        vector<HPDrink> HPToAdd{Milk, Spaghetti};
-        addToHPList(HPToAdd);
-
-        Fruitage OrangeJuice("Orange Juice", 15, 12, 1, 18);
-        Fruitage Pumpkin("Pumpkin", 12, 10, 1, 15);
-        vector<Fruitage> FruitageToAdd{OrangeJuice, Pumpkin};
-        addToFruitageList(FruitageToAdd);
-    }
-    Store() = default;
-    //////               ///////                      //////
-
-    ///// Shop items based on player level(crafted items) /////
-
-    void addStaminaByLevel(int playerLevel)
-    {
-        int power = 10 + floor(sqrt(playerLevel)) * 2;
-        int price = 10 + floor(sqrt(playerLevel)) * 1;
-        int count = 1;
-
-        vector<string> staminaNames = {"Bandage", "Elixir", "Painkiller", "Drug", "Quickening", "Blood", "Boosting Ampoule", "Health Elixir"};
-        int randomIndex = rand() % staminaNames.size();
-        string randomName = staminaNames[randomIndex];
-
-        StaminaPotion newStamina(randomName, power, count, price);
-        addToStaminaList(newStamina);
-    }
-
-    void addHPByLevel(int playerLevel)
-    {
-        int power = 10 + floor(sqrt(playerLevel)) * 3;
-        int price = 10 + floor(sqrt(playerLevel)) * 1;
-        int count = 1;
-
-        vector<string> hpNames = {"Pizza", "Cracker", "Kebab", "Smoothie", "Chocolate", "Coffee", "Dough", "Nuts"};
-        int randomIndex = rand() % hpNames.size();
-        string randomName = hpNames[randomIndex];
-
-        HPDrink newHp(randomName, power, count, price);
-        addToHPList(newHp);
-    }
-
-    void addWeaponByLevel(int playerLevel)
-    {
-        int power = 10 + floor(sqrt(playerLevel)) * 3;
-        int price = 10 + floor(sqrt(playerLevel)) * 2;
-        int count = 1;
-
-        vector<string> weaponNames = {"Sword", "Handgun", "Axe", "Hammer", "Shotgun", "Pistol", "Bow", "Shovel"};
-        int randomIndex = rand() % weaponNames.size();
-        string randomName = weaponNames[randomIndex];
-
-        if (rand() % 10 == 4)
-        {
-            Weapon newWeapon(randomName, power, count, 2 * price, 'p', char(99 + ((playerLevel % 2) * 14)));
-            addToWeaponList(newWeapon);
-        }
-        else
-        {
-            Weapon newWeapon(randomName, power, count, price, 't', char(199 + ((playerLevel % 2) * 14)));
-            addToWeaponList(newWeapon);
-        }
-    }
-
-    void addFruitageByLevel(int playerLevel, int capability)
-    {
-        if (playerLevel > 7)
-        {
-            int power = 10 + floor(sqrt(playerLevel)) * 3;
-            int price = 10 + floor(sqrt(playerLevel)) * 1;
-            int count = 1;
-
-            vector<string> fruitNames = {"Broccoli", "Pineapple", "Turnip", "Spinach", "Carrot", "Melon", "Lettuce", "Apple"};
-            int randomIndex = rand() % fruitNames.size();
-            string randomName = fruitNames[randomIndex];
-
-            Fruitage newFruitage(randomName, power, capability, count, price);
-            addToFruitageList(newFruitage);
-        }
-    }
-    /////                  //////                     //////
-
-    vector<Weapon> getWeapons()
-    {
-        return weapon;
-    }
-    vector<StaminaPotion> getStamina()
-    {
-        return Stamina;
-    }
-    vector<HPDrink> getHP()
-    {
-        return HP;
-    }
-    vector<Fruitage> getFruitage()
-    {
-        return fruitage;
-    }
-    /////  Add basic and crafted items to the store   //////
-    void addToWeaponList(Weapon item)
-    {
-        weapon.push_back(item);
-    }
-    void addToWeaponList(const vector<Weapon> &items)
-    {
-        for (const auto &item : items)
-        {
-            weapon.push_back(item);
-        }
-    }
-
-    void addToStaminaList(StaminaPotion item)
-    {
-        Stamina.push_back(item);
-    }
-
-    void addToStaminaList(const vector<StaminaPotion> &items)
-    {
-        for (const auto &item : items)
-        {
-            Stamina.push_back(item);
-        }
-    }
-
-    void addToHPList(HPDrink item)
-    {
-        HP.push_back(item);
-    }
-    void addToHPList(const vector<HPDrink> &items)
-    {
-        for (const auto &item : items)
-        {
-            HP.push_back(item);
-        }
-    }
-    void addToFruitageList(Fruitage item)
-    {
-        fruitage.push_back(item);
-    }
-    void addToFruitageList(const vector<Fruitage> &items)
-    {
-        for (const auto &item : items)
-        {
-            fruitage.push_back(item);
-        }
-    }
-    //////               ///////                      //////
-
-    /////////////////////////////////////////////////////////////////////////////
-
-    void store()
-    {
-        cout << "\"WELCOME TO OUR STORE!\"\nWhich one do you want?\n1. Weapon\n2. First aid box(To increse Stamina)\n3. Edible(To increase Hp)\n4. Fruitage(To increase Stamina and Hp)\n5. Exit."
-             << endl;
-        int command;
-        cin >> command;
-        switch (command)
-        {
-        case 1:
-            cout << "Weapon:\n";
-            for (int i = 0; i < weapon.size(); i++)
-            {
-                string type1;
-                if (weapon[i].getType() == 't')
-                {
-                    type1 = "Throwable";
-                }
-                else
-                {
-                    type1 = "Permanent";
-                }
-                string model1;
-                if (weapon[i].getType() == 'c')
-                {
-                    model1 = "ColdWeapon";
-                }
-                else
-                {
-                    model1 = "WarmWeapon";
-                }
-                cout << i + 1 << ". " << weapon[i].getName() << endl
-                     << " -Price: " << weapon[i].getPrice() << endl
-                     << " -Power: " << weapon[i].getPower() << endl
-                     << " -model : " << model1 << endl
-                     << " -type : " << type1 << endl;
-            }
-            cin >> command;
-            if (command > 0 && command <= weapon.size())
-            {
-                if (model->player.getMoney() >= weapon[command - 1].getPrice())
-                {
-                    model->human.addWeapon(weapon[command - 1]); ///////////////////
-                    model->player.setMoney(model->player.getMoney() - weapon[command - 1].getPrice());
-                    cout << "The item you bought:" << endl
-                         << "- " << weapon[command - 1].getName()
-                         << " (Power: " << weapon[command - 1].getPower() << ", Price: " << weapon[command - 1].getPrice() << ")\n"
-                         << "\n Your Balance : " << model->player.getMoney() << endl
-                         << endl;
-                }
-                else
-                {
-                    cout << "You do not have enough money to buy this item.\n";
-                }
-            }
-            else
-            {
-                cerr << "Invalid Number!";
-            }
-            break;
-
-        case 2:
-            cout << "First aid box :\n"
-                 << endl;
-            for (int i = 0; i < Stamina.size(); i++)
-            {
-                cout << i + 1 << "- " << Stamina[i].getName() << " (Price: " << Stamina[i].getPrice() << " , Power:" << Stamina[i].getPower() << ")" << endl;
-            }
-            cin >> command;
-            if (command > 0 && command <= Stamina.size())
-            {
-                if (model->player.getMoney() >= Stamina[command - 1].getPrice())
-                {
-                    model->human.addStaminaItem(Stamina[command - 1]);
-                    model->player.setMoney(model->player.getMoney() - Stamina[command - 1].getPrice());
-                    cout << "The items you bought:" << endl
-                         << "- " << Stamina[command - 1].getName()
-                         << " (Power: " << Stamina[command - 1].getPower() << ", Price: " << Stamina[command - 1].getPrice() << ")"
-                         << "\n Your Balance : " << model->player.getMoney()
-                         << endl;
-                }
-                else
-                {
-                    cout << "You don not have enough money to buy this item.\n";
-                }
-            }
-            else
-            {
-                cerr << "Invalid Number!";
-            }
-            break;
-
-        case 3:
-            cout << "Edible :" << endl;
-            for (int i = 0; i < HP.size(); i++)
-            {
-                cout << i + 1 << "- " << HP[i].getName() << " (Price: " << HP[i].getPrice() << " , Power:" << HP[i].getPower() << ")" << endl;
-            }
-            cin >> command;
-            if (command > 0 && command <= HP.size())
-            {
-                if (model->player.getMoney() >= HP[command - 1].getPrice())
-                {
-                    model->human.addHPItem(HP[command - 1]);
-                    model->player.setMoney(model->player.getMoney() - HP[command - 1].getPrice());
-                    cout << "The items you bought:" << endl
-                         << "- " << HP[command - 1].getName()
-                         << " (Power: " << HP[command - 1].getPower() << ", Price: " << HP[command - 1].getPrice() << ")"
-                         << "\n Your Balance : " << model->player.getMoney() << endl;
-                }
-                else
-                {
-                    cout << "You don not have enough money to buy this item.\n";
-                }
-            }
-            else
-            {
-                cerr << "Invalid Number!";
-            }
-            break;
-        case 4:
-            cout << "Fruitage\n : ";
-            for (int i = 0; i < fruitage.size(); i++)
-            {
-                cout << i + 1 << ". " << fruitage[i].getName() << " (Price: " << fruitage[i].getPrice() << " , Power:" << fruitage[i].getPower() << ")" << endl;
-            }
-            cin >> command;
-            if (command > 0 && command <= fruitage.size())
-            {
-                if (model->player.getMoney() >= fruitage[command - 1].getPrice())
-                {
-
-                    model->human.addFruitageItem(fruitage[command - 1]);
-                    model->player.setMoney(model->player.getMoney() - fruitage[command - 1].getPrice());
-                    cout << "The items you bought:" << endl
-                         << "- " << fruitage[command - 1].getName()
-                         << " (Power: " << fruitage[command - 1].getPower() << ", Price: " << fruitage[command - 1].getPrice() << ")"
-                         << "\n Your Balance : " << model->player.getMoney() << endl;
-                }
-                else
-                {
-                    cout << "You don't have enough money to buy this item.\n";
-                }
-            }
-            else
-            {
-                cerr << "Invalid Number!";
-            }
-            break;
-
-        case 5:
-            return;
-
-        default:
-            cerr << "Invalid command!\n";
-            break;
         }
     }
 };
@@ -1307,7 +1315,7 @@ public:
                         cerr << "Invalid choice!\n";
                     }
                 }
-
+                break;
             case (22):
 
                 // if HPdrink was chosen:
@@ -1338,7 +1346,7 @@ public:
                         cerr << "Invalid choice!\n";
                     }
                 }
-
+                break;
             case 23:
 
                 // if Fruitage was chosen:
@@ -1372,10 +1380,30 @@ public:
                         }
                     }
                 }
+                break;
             }
             round();
             break;
         case 3:
+            if (model->getPlayer().getExperience() <= model->getPlayer().getLevel())
+            {
+                cerr << "Level up is not possible.\n";
+                round();
+            }
+            else
+            {
+                srand (time(NULL));
+                int level = model->player.getExperience();
+                model->player.setLevel(level);
+                model->human.setPower(model->human.getPower() + 5 * floor(level / 10));
+                model->human.setColdskill(model->human.getColdskill() + (rand() % 4) * level);
+                model->human.setWarmskill(model->human.getWarmskill() + (rand() % 4) * level);
+                store->addFruitageByLevel(level);
+                store->addHPByLevel(level);
+                store->addStaminaByLevel(level);
+                store->addWeaponByLevel(level);
+            }
+            break;
         default:
             cerr << "Incorrect command";
             round();
@@ -1424,15 +1452,19 @@ int main()
     Factory factory1(zahra, zar, model, "Zambie", store);
     factory1.factory();
     Controller controller(model, &store);
-
     view view1(model, controller, &store);
-    int i = 0;
+    int randomAction = 1;
+    srand(time(NULL));
     while (model->getHuman().isAlive())
     {
-        if (i % 2 == 0)
+        randomAction = rand() % 2;
+        if (randomAction == 0)
+        {
             store.store();
+        }
         else
+        {
             view1.round();
-        i++;
+        }
     }
 }
