@@ -163,7 +163,7 @@ protected:
     int HP;
     int Power;
     int Capability;
-    vector<Weapon> Weapons;
+    vector<Weapon> Weapons = {};
     string Name;
 
 public:
@@ -286,9 +286,9 @@ private:
     int Warmskill;
     int Coldskill;
 
-    vector<StaminaPotion> Staminaitems;
-    vector<HPDrink> HPitems;
-    vector<Fruitage> Fruitageitems;
+    vector<StaminaPotion> Staminaitems = {};
+    vector<HPDrink> HPitems = {};
+    vector<Fruitage> Fruitageitems = {};
 
 public:
     bool isArmor = 0;
@@ -941,9 +941,9 @@ public:
             double a1 = 0.7 + (rand() % 100) / 100;
             double a2 = 0.7 + (rand() % 100) / 100;
             double a3 = 0.7 + (rand() % 100) / 100;
-            Human enemy(a1 * human.getStamina(), a2 * human.getHP(), a3 * human.getPower(), 0, 0);
             Weapon w("fist", 5, 1, 0, 'p', 'c');
-            enemy.addWeapon(w);
+            Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int (a3 * human.getPower()), 0, 0);
+
             enemy.setName(EnemyType);
             model->setEnemy(enemy);
         }
