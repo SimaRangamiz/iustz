@@ -3,6 +3,7 @@
 #include <vector>
 #include <ctime>
 #include <cmath>
+
 using namespace std;
 
 //////////////////////////////////////////////////////////Item
@@ -810,8 +811,8 @@ public:
                  << endl;
             for (int i = 0; i < Stamina.size(); i++)
             {
-                cout << i + 1 << "- " << Stamina[i].getName() <<endl
-                     << "- Price: " << Stamina[i].getPrice() << endl 
+                cout << i + 1 << "- " << Stamina[i].getName() << endl
+                     << "- Price: " << Stamina[i].getPrice() << endl
                      << "- Power:" << Stamina[i].getPower() << endl;
             }
             cin >> command;
@@ -843,7 +844,7 @@ public:
             for (int i = 0; i < HP.size(); i++)
             {
                 cout << i + 1 << "- " << HP[i].getName() << endl
-                     << "- Price: " << HP[i].getPrice() << endl 
+                     << "- Price: " << HP[i].getPrice() << endl
                      << "- Power: " << HP[i].getPower() << endl;
             }
             cin >> command;
@@ -873,8 +874,8 @@ public:
             for (int i = 0; i < fruitage.size(); i++)
             {
                 cout << i + 1 << ". " << fruitage[i].getName() << endl
-                << "- Price: " << fruitage[i].getPrice() << endl
-                << "- Power:" << fruitage[i].getPower() << endl;
+                     << "- Price: " << fruitage[i].getPrice() << endl
+                     << "- Power:" << fruitage[i].getPower() << endl;
             }
             cin >> command;
             if (command > 0 && command <= fruitage.size())
@@ -935,6 +936,18 @@ public:
 
     void factory()
     {
+
+        if (player.getLevel() < 10)
+        {
+            EnemyType = "Zambie";
+        }
+        else
+        {
+            srand(time(NULL));
+            vector<string> names = {"Shadowblade", "Nightshade", "Inferno", "Frostbite", "Venomous", "Grimreaper", "Darkheart", "Bloodfang", "Doombringer", "Warlock"};
+            int i = rand() % 10;
+            EnemyType = names[i];
+        }
         if (EnemyType == "Zambie")
         {
             srand(time(NULL));
@@ -942,7 +955,7 @@ public:
             double a2 = 0.7 + (rand() % 100) / 100;
             double a3 = 0.7 + (rand() % 100) / 100;
             Weapon w("fist", 5, 1, 0, 'p', 'c');
-            Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int (a3 * human.getPower()), 0, 0);
+            Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int(a3 * human.getPower()), 0, 0);
 
             enemy.setName(EnemyType);
             model->setEnemy(enemy);
@@ -985,6 +998,7 @@ public:
             }
             Human enemy(a1 * human.getStamina(), a2 * human.getHP(), a3 * human.getPower(), w, sp, hp, fr, a4 * human.getWarmskill(), a5 * human.getColdskill());
             model->setEnemy(enemy);
+            enemy.setName(EnemyType);
         }
     }
 };
@@ -1111,6 +1125,17 @@ public:
             {
                 if (Attack('A', i))
                 {
+            int HP = model->getEnemy().getHP();
+            int Hstamina = model->getHuman().getStamina();
+
+                    cout << model->enemy.getName() << " Attacked!" << endl
+                         << "-Enemy: " << endl
+                         << " Stamina: " << model->getEnemy().getStamina() << endl
+                         << " HP: " << model->getEnemy().getHP() << " (" << HP << ")" << endl
+                         << "-You: " << endl
+                         << " Stamina: " << model->getHuman().getStamina() << " (" << Hstamina << ")" << endl
+                         << " HP: " << model->getHuman().getHP() << endl
+                         << endl;
                     return;
                 }
             }
@@ -1118,6 +1143,11 @@ public:
         }
         else
         {
+            if (model->getEnemy().getWeapon().empty())
+            {
+                cout << "The enemy surrendered!" << endl;
+                return;
+            }
             int Hstamina = model->getHuman().getStamina();
             int fruitSize = model->getEnemy().getFruitageItems().size();
             int staminaSize = model->getEnemy().getStaminaItems().size();
@@ -1220,7 +1250,8 @@ public:
              << "enemy HP: " << model->getEnemy().getHP() << endl
              << "1. Attack" << endl
              << "2. Using items" << endl
-             << "3. Level up" << endl;
+             << "3. Level up" << endl
+             << "4. exit" << endl;
         int YourHp = model->getHuman().getHP();
         int YourStamina = model->getHuman().getStamina();
         int EnemyStamina = model->getEnemy().getStamina();
@@ -1231,47 +1262,55 @@ public:
         switch (command)
         {
         case 1:
-            cout << "Weapons :" << endl;
-            for (int i = 0; i < model->getHuman().getWeapon().size(); i++)
+            if (model->getHuman().getWeapon().empty())
             {
-                cout << i + 1 << ". " << model->getHuman().getWeapon()[i].getName() << endl
-                     << "   - power : " << model->getHuman().getWeapon()[i].getPower() << endl
-                     << "   - count : " << model->getHuman().getWeapon()[i].getCount() << endl
-                     << "   - model : " << model->getHuman().getWeapon()[i].getModel() << endl;
+                cout << "No Weapons available!\n";
+                round();
             }
-            int i;
-            cin >> i;
-            if (i <= model->getHuman().getWeapon().size())
-            { // human
-                if (controller.Attack('B', i - 1))
-                {
-                    cout << "-You: " << endl
-                         << " Stamina: " << model->getHuman().getStamina() << endl
-                         << " HP: " << model->getHuman().getHP() << " (" << YourHp << ")" << endl
-                         << "-Enemy:" << endl
-                         << " Stamina: " << model->getEnemy().getStamina() << " (" << EnemyStamina << ")" << endl
-                         << " HP: " << model->getEnemy().getHP() << endl
-                         << endl;
-                    cout << "Do you want to Attack?\n1. yes\n2. no\n";
-                    cin >> command;
-                    if (command == 2)
-                    {
-                        model->enemy.setStamina(EnemyStamina);
-                        model->human.setHP(YourHp);
-                        if (model->human.Weapons[i].getModel() == 't')
-                            model->human.Weapons[i].addCount(1);
-                        round();
-                    }
-
-                    // enemy
-                    controller.enemyAttack();
-                }
-            }
-
             else
             {
-                cerr << "Out of range!";
-                round();
+                cout << "Weapons :" << endl;
+                for (int i = 0; i < model->getHuman().getWeapon().size(); i++)
+                {
+                    cout << i + 1 << ". " << model->getHuman().getWeapon()[i].getName() << endl
+                         << "   - power : " << model->getHuman().getWeapon()[i].getPower() << endl
+                         << "   - count : " << model->getHuman().getWeapon()[i].getCount() << endl
+                         << "   - model : " << model->getHuman().getWeapon()[i].getModel() << endl;
+                }
+                int i;
+                cin >> i;
+                if (i <= model->getHuman().getWeapon().size())
+                { // human
+                    if (controller.Attack('B', i - 1))
+                    {
+                        cout << "-You: " << endl
+                             << " Stamina: " << model->getHuman().getStamina() << endl
+                             << " HP: " << model->getHuman().getHP() << " (" << YourHp << ")" << endl
+                             << "-Enemy:" << endl
+                             << " Stamina: " << model->getEnemy().getStamina() << " (" << EnemyStamina << ")" << endl
+                             << " HP: " << model->getEnemy().getHP() << endl
+                             << endl;
+                        cout << "Do you want to Attack?\n1. yes\n2. no\n";
+                        cin >> command;
+                        if (command == 2)
+                        {
+                            model->enemy.setStamina(EnemyStamina);
+                            model->human.setHP(YourHp);
+                            if (model->human.Weapons[i].getModel() == 't')
+                                model->human.Weapons[i].addCount(1);
+                            round();
+                        }
+
+                        // enemy
+                        controller.enemyAttack();
+                    }
+                }
+
+                else
+                {
+                    cerr << "Out of range!";
+                    round();
+                }
             }
             break;
 
@@ -1392,7 +1431,7 @@ public:
             }
             else
             {
-                srand (time(NULL));
+                srand(time(NULL));
                 int level = model->player.getExperience();
                 model->player.setLevel(level);
                 model->human.setPower(model->human.getPower() + 5 * floor(level / 10));
@@ -1404,6 +1443,8 @@ public:
                 store->addWeaponByLevel(level);
             }
             break;
+        case 4:
+            return;
         default:
             cerr << "Incorrect command";
             round();
@@ -1440,11 +1481,13 @@ int main()
 
     vector<StaminaPotion> Stamina = {};
     vector<HPDrink> HP = {};
-    vector<Weapon> weapons = {};
-    zahra.setWeapon(weapons);
+    Weapon Knife("Knife ", 10, 2, 8, 'p', 'c');
+    Weapon Bomb("Bomb ", 20, 1, 15, 't', 'w');
+    vector<Weapon> weaponsToAdd{Knife, Bomb};
+    zahra.setWeapon(weaponsToAdd);
     vector<Fruitage> fruitage = {};
     // zahra.setWeapon(weapons);
-    Store store(Stamina, HP, weapons, model);
+    Store store(Stamina, HP, weaponsToAdd, model);
     store.addStaminaByLevel(playerLevel);
     store.addHPByLevel(playerLevel);
     store.addWeaponByLevel(playerLevel);
