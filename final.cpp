@@ -722,7 +722,7 @@ public:
 
     void addToStaminaList(StaminaPotion item)
     {
-        Stamina.push_back(items[i]);
+        Stamina.push_back(item);
     }
 
     void addToStaminaList(const vector<StaminaPotion> items)
