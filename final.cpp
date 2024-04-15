@@ -122,22 +122,6 @@ public:
     // }
 };
 
-// class Armor : public Item
-// {
-// private:
-//     bool isArmor;
-
-// public:
-//     Armor(string name, int power, int count, int price, bool armor) : Item(name, power, count, price), isArmor(armor) {}
-
-//     Armor() = default;
-
-//     bool isArmorItem() const
-//     {
-//         return isArmor;
-//     }
-// };
-
 class Fruitage : public Item
 {
 public:
@@ -255,7 +239,7 @@ public:
 
     bool isAlive()
     {
-        return Stamina > 0;
+        return (Stamina > 0);
     }
 
     friend class Controller;
@@ -517,6 +501,11 @@ public:
     void setMoney(int money)
     {
         Money = money;
+    }
+
+    void addMoney(int money)
+    {
+        Money += money;
     }
 
     int getMoney()
@@ -817,7 +806,7 @@ public:
                     Weapon wp = weapon[command - 1];
                     wp.setCount(quantity);
                     model->human.addWeapon(wp);
-                    model->player.setMoney(model->player.getMoney() - quantity * weapon[command - 1].getPrice());
+                    model->player.addMoney(-(quantity * weapon[command - 1].getPrice()));
 
                     cout << "The item you bought:" << endl
                          << "- " << weapon[command - 1].getName()
@@ -869,7 +858,7 @@ public:
                     StaminaPotion sp = Stamina[command - 1];
                     sp.setCount(quantity);
                     model->human.addStaminaItem(sp);
-                    model->player.setMoney(model->player.getMoney() - quantity * Stamina[command - 1].getPrice());
+                    model->player.addMoney(-(quantity * Stamina[command - 1].getPrice()));
 
                     cout << "The items you bought:" << endl
                          << "- " << Stamina[command - 1].getName()
@@ -919,7 +908,7 @@ public:
                     HPDrink hd = HP[command - 1];
                     hd.setCount(quantity);
                     model->human.addHPItem(hd);
-                    model->player.setMoney(model->player.getMoney() - quantity * HP[command - 1].getPrice());
+                    model->player.addMoney(-(quantity * HP[command - 1].getPrice()));
 
                     cout << "The items you bought:" << endl
                          << "- " << HP[command - 1].getName()
@@ -968,7 +957,7 @@ public:
                     Fruitage fa = fruitage[command - 1];
                     fa.setCount(quantity);
                     model->human.addFruitageItem(fa);
-                    model->player.setMoney(model->player.getMoney() - quantity * fruitage[command - 1].getPrice());
+                    model->player.addMoney(-(quantity * fruitage[command - 1].getPrice()));
 
                     cout << "The items you bought:" << endl
                          << "- " << fruitage[command - 1].getName()
@@ -1087,8 +1076,8 @@ public:
                 int j = rand() % store.getFruitage().size();
                 fr.push_back(store.getFruitage()[j]);
             }
-            
-            Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int(a3 * human.getPower()),w,sp,hp,fr, 0, 0);
+
+            Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int(a3 * human.getPower()), w, sp, hp, fr, 0, 0);
 
             enemy.setName(EnemyType);
             model->setEnemy(enemy);
@@ -1129,8 +1118,8 @@ public:
                 int j = rand() % store.getFruitage().size();
                 fr.push_back(store.getFruitage()[j]);
             }
-            
-            Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int(a3 * human.getPower())*2,w,sp,hp,fr, 0, 0);
+
+            Human enemy(int(a1 * human.getStamina()), int(a2 * human.getHP()), int(a3 * human.getPower()) * 2, w, sp, hp, fr, 0, 0);
 
             enemy.setName(EnemyType);
             model->setEnemy(enemy);
@@ -1205,7 +1194,6 @@ public:
         {
             if (model->getEnemy().getWeapon()[index].getCount() < 1)
             {
-                // cerr << "\nNo Weapon! \nTry Again. \n";
                 return false;
             }
 
@@ -1213,7 +1201,6 @@ public:
             {
                 if (model->getEnemy().getHP() < model->getEnemy().getWeapon()[index].getPower())
                 {
-                    // cerr << "\nLow Enargy! \nTry Again. \n";
                     return false;
                 }
 
@@ -1235,6 +1222,17 @@ public:
                 }
                 if (!model->getHuman().isAlive())
                 {
+                    int HP = model->getEnemy().getHP();
+                    int Hstamina = model->getHuman().getStamina();
+                    cout << model->enemy.getName() << " Attacked!" << endl
+                         << "-Enemy: " << endl
+                         << " Stamina: " << model->getEnemy().getStamina() << endl
+                         << " HP: " << model->getEnemy().getHP() << " (" << HP << ")" << endl
+                         << "-You: " << endl
+                         << " Stamina: " << model->getHuman().getStamina() << " (" << Hstamina << ")" << endl
+                         << " HP: " << model->getHuman().getHP() << endl
+                         << endl;
+
                     cout << "\nGame Over! :(\n";
                     exit(0);
                 }
@@ -1329,23 +1327,20 @@ public:
                 cout << "The enemy surrendered!" << endl;
                 return;
             }
-            for (int i = 0; i < model->getEnemy().getWeapon().size(); i++)
-            {
-                if (Attack('A', i))
-                {
-                    int HP = model->getEnemy().getHP();
-                    int Hstamina = model->getHuman().getStamina();
 
-                    cout << model->enemy.getName() << " Attacked!" << endl
-                         << "-Enemy: " << endl
-                         << " Stamina: " << model->getEnemy().getStamina() << endl
-                         << " HP: " << model->getEnemy().getHP() << " (" << HP << ")" << endl
-                         << "-You: " << endl
-                         << " Stamina: " << model->getHuman().getStamina() << " (" << Hstamina << ")" << endl
-                         << " HP: " << model->getHuman().getHP() << endl
-                         << endl;
-                    return;
-                }
+            int HP = model->getEnemy().getHP();
+            int Hstamina = model->getHuman().getStamina();
+            if (Attack('A', 0))
+            {
+                cout << model->enemy.getName() << " Attacked!" << endl
+                     << "-Enemy: " << endl
+                     << " Stamina: " << model->getEnemy().getStamina() << endl
+                     << " HP: " << model->getEnemy().getHP() << " (" << HP << ")" << endl
+                     << "-You: " << endl
+                     << " Stamina: " << model->getHuman().getStamina() << " (" << Hstamina << ")" << endl
+                     << " HP: " << model->getHuman().getHP() << endl
+                     << endl;
+                return;
             }
             return;
         }
@@ -1394,6 +1389,7 @@ public:
                         }
                     }
                     enemyAttack();
+                    return;
                 }
             }
             if (model->getEnemy().getHPItems().size() > 0 || model->getEnemy().getFruitageItems().size() > 0)
@@ -1428,6 +1424,7 @@ public:
                         }
                     }
                     enemyAttack();
+                    return;
                 }
             }
 
@@ -1733,7 +1730,7 @@ public:
         case 4:
             return;
         default:
-            cerr << "Incorrect command";
+            cerr << "Incorrect command\n";
             round();
             break;
         }
@@ -1767,7 +1764,7 @@ int main()
     cout << "Enter a HP" << endl;
     // cin >> hp;
 
-    int level = 15;
+    int level = 14;
     cout << "Enter a Level" << endl;
     // cin >> level;
 
