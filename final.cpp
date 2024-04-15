@@ -666,7 +666,7 @@ public:
         }
         else
         {
-            Weapon newWeapon(randomName, power, count, price, 't', char(199 + ((playerLevel % 2) * 14)));
+            Weapon newWeapon(randomName, power, count, price, 't', char(99 + ((playerLevel % 2) * 14)));
             addToWeaponList(newWeapon);
         }
     }
@@ -712,24 +712,24 @@ public:
     {
         weapon.push_back(item);
     }
-    void addToWeaponList(const vector<Weapon> &items)
+    void addToWeaponList(vector<Weapon> items)
     {
-        for (const auto &item : items)
+        for (int i=0; i<items.size(); i++)
         {
-            weapon.push_back(item);
+            weapon.push_back(items[i]);
         }
     }
 
     void addToStaminaList(StaminaPotion item)
     {
-        Stamina.push_back(item);
+        Stamina.push_back(items[i]);
     }
 
-    void addToStaminaList(const vector<StaminaPotion> &items)
+    void addToStaminaList(const vector<StaminaPotion> items)
     {
-        for (const auto &item : items)
+        for (int i=0; i<items.size(); i++)
         {
-            Stamina.push_back(item);
+            Stamina.push_back(items[i]);
         }
     }
 
@@ -737,22 +737,22 @@ public:
     {
         HP.push_back(item);
     }
-    void addToHPList(const vector<HPDrink> &items)
+    void addToHPList(const vector<HPDrink> items)
     {
-        for (const auto &item : items)
+        for (int i=0; i<items.size(); i++)
         {
-            HP.push_back(item);
+            HP.push_back(items[i]);
         }
     }
     void addToFruitageList(Fruitage item)
     {
         fruitage.push_back(item);
     }
-    void addToFruitageList(const vector<Fruitage> &items)
+    void addToFruitageList(vector<Fruitage> items)
     {
-        for (const auto &item : items)
+        for (int i=0; i<items.size(); i++)
         {
-            fruitage.push_back(item);
+            fruitage.push_back(items[i]);
         }
     }
     //////               ///////                      //////
@@ -1742,35 +1742,35 @@ int main()
 
     string name = "zahra";
     cout << "Enter your name" << endl;
-    // cin >> name;
+    cin >> name;
 
     int age = 80;
     cout << "Enter your age" << endl;
-    // cin >> age;
+    cin >> age;
 
     char gender = 'w';
     cout << "Enter your gender (m/w)" << endl;
-    // cin >> gender;
+    cin >> gender;
 
     int power = 20;
     cout << "Enter a power" << endl;
-    // cin >> power;
+    cin >> power;
 
     int stamina = 150;
     cout << "Enter a Stamina" << endl;
-    // cin >> stamina;
+    cin >> stamina;
 
     int hp = 75;
     cout << "Enter a HP" << endl;
-    // cin >> hp;
+    cin >> hp;
 
     int level = 14;
     cout << "Enter a Level" << endl;
-    // cin >> level;
+    cin >> level;
 
     int money = 200;
     cout << "Enter money" << endl;
-    // cin >> money;
+    cin >> money;
 
     Human human(stamina, hp, power, power / 2, power / 2);
     Player player(name, age, gender, level, money);
